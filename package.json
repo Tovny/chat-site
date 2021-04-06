@@ -4,8 +4,18 @@
   "description": "A chat PWA using Angular and uWebSockets.js",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon server.js"
   },
   "author": "Anton Drofenik",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "firebase-admin": "^9.6.0",
+    "ws": "^7.4.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
 }
