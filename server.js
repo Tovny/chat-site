@@ -27,7 +27,7 @@ const wss = new WebSocket.Server({ port: 5000 });
           );
         });
 
-        ws.username = user;
+        ws.username = user.username;
       }
 
       if (type === "join") {
@@ -83,7 +83,9 @@ const wss = new WebSocket.Server({ port: 5000 });
       if (type === "message") {
         message = {
           msg: payload.msg,
-          user: payload.user,
+          username: user.username,
+          uid: user.uid,
+          avatar: user.avatar,
           time: admin.firestore.Timestamp.now(),
         };
       }
