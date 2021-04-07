@@ -1,4 +1,4 @@
-import { format, isToday, isTomorrow, isYesterday } from "date-fns";
+import { format, isToday, isYesterday } from "date-fns";
 
 import { useState, useEffect, useRef } from "react";
 
@@ -9,16 +9,16 @@ import {
   ButtonGroup,
   Paper,
   Typography,
-  Grid,
+  Tooltip,
   Avatar,
+  Zoom,
 } from "@material-ui/core";
 
 import useMessageStyles from "./chat-window-styles";
 
-const Messages = ({ messages, sendMessage }) => {
+const Messages = ({ messages, sendMessage, user }) => {
   const classes = useMessageStyles();
   const [message, setMessage] = useState("");
-  const [user, setUser] = useState(`User ${Math.ceil(Math.random() * 1000)}`);
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -29,29 +29,39 @@ const Messages = ({ messages, sendMessage }) => {
 
   return (
     <>
-      <Container className={classes.messagesContainer} ref={containerRef}>
-        {messages?.map((msg, i) => (
-          <Message
-            message={msg}
-            prevMessage={messages[i - 1]}
-            index={i}
-            classes={classes}
-          />
-        ))}
+      <Container className={classes.messagesContainer}>
+        <ul ref={containerRef} className={classes.messagesList}>
+          {messages?.map((msg, i) => (
+            <Message
+              message={msg}
+              prevMessage={messages[i - 1]}
+              index={i}
+              key={i}
+              classes={classes}
+            />
+          ))}
+        </ul>
       </Container>
       <form
         onSubmit={(event) => {
           event.preventDefault();
-          sendMessage({ msg: message, user: user });
+          if (message && user)
+            sendMessage(
+              {
+                msg: message,
+              },
+              user
+            );
           setMessage("");
         }}
       >
-        <ButtonGroup fullWidth>
+        <ButtonGroup fullWidth className={classes.typingGroup}>
           <TextField
             variant="outlined"
             fullWidth
             value={message}
             placeholder="type here"
+            color="primary"
             onChange={(e) => setMessage(e.target.value)}
           ></TextField>
           <Button
@@ -60,7 +70,7 @@ const Messages = ({ messages, sendMessage }) => {
             color="primary"
             size="small"
           >
-            Submit
+            Send
           </Button>
         </ButtonGroup>
       </form>
@@ -72,75 +82,64 @@ const Message = ({ message, prevMessage, index, classes }) => {
   const [visible, setVisible] = useState(false);
   const messageDate = new Date(message.time["_seconds"] * 1000);
 
-  return (
-    <Grid
-      container
-      direction="row"
-      alignItems="flex-start"
-      spacing={1}
-      key={index}
+  return index !== 0 && prevMessage.uid === message.uid ? (
+    <li
       onMouseEnter={() => setVisible(true)}
       onMouseLeave={() => setVisible(false)}
+      onClick={() => setVisible(!visible)}
+      className={classes.messageLi}
     >
-      {index !== 0 && prevMessage.user === message.user ? (
-        <>
-          <Grid
-            item
-            xs={1}
-            className={
-              visible ? classes.visiblePostTime : classes.hiddenPostTime
-            }
+      <Tooltip
+        title={formatDate(messageDate, false, true)}
+        arrow
+        TransitionComponent={Zoom}
+      >
+        <Typography
+          variant="subtitle2"
+          className={visible ? classes.visiblePostTime : classes.hiddenPostTime}
+        >
+          {formatDate(messageDate)}
+        </Typography>
+      </Tooltip>
+      <Typography variant="subtitle1" className={classes.messageText}>
+        {message.msg}
+      </Typography>
+    </li>
+  ) : (
+    <>
+      <li className={classes.messageLi}>
+        <Avatar
+          alt={`${message.username} avatar`}
+          src={message.avatar}
+        ></Avatar>
+        <Paper square variant="outlined" className={classes.postHeadingPaper}>
+          <Typography variant="subtitle1" className={classes.postUsername}>
+            {message.username}
+          </Typography>
+          <Tooltip
+            title={formatDate(messageDate, false, true)}
+            arrow
+            TransitionComponent={Zoom}
           >
-            {formatDate(messageDate)}
-          </Grid>
-          <Grid item xs={11}>
-            <Typography variant="subtitle1" className={classes.messageText}>
-              {message.msg}
+            <Typography variant="subtitle2" className={classes.postTime}>
+              {formatDate(messageDate, true)}
             </Typography>
-          </Grid>
-        </>
-      ) : (
-        <>
-          <Grid item xs={1}>
-            <Avatar
-              alt={`${message.user} avatar`}
-              src={message.avatar}
-            ></Avatar>
-          </Grid>
-          <Grid item xs={11}>
-            <Grid container direction="column">
-              <Paper
-                square
-                variant="outlined"
-                className={classes.postHeadingPaper}
-              >
-                <Grid container alignItems="center">
-                  <Typography
-                    variant="subtitle1"
-                    className={classes.postUsername}
-                  >
-                    {message.user}
-                  </Typography>
-                  <Typography variant="subtitle2" className={classes.postTime}>
-                    {formatDate(messageDate, true)}
-                  </Typography>
-                </Grid>
-              </Paper>
-              <Grid item>
-                <Typography variant="subtitle1" className={classes.messageText}>
-                  {message.msg}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Grid>
-        </>
-      )}
-    </Grid>
+          </Tooltip>
+        </Paper>
+      </li>
+      <li className={classes.messageLi}>
+        <Typography variant="subtitle1" className={classes.messageText}>
+          {message.msg}
+        </Typography>
+      </li>
+    </>
   );
 };
 
-const formatDate = (date, header = false) => {
-  if (isToday(date) && header) {
+const formatDate = (date, header = false, tooltip = false) => {
+  if (tooltip) {
+    return format(date, "iii, LLL do yyyy 'at' HH:mm");
+  } else if (isToday(date) && header) {
     return format(date, "'Today', HH:mm");
   } else if (isToday(date)) {
     return format(date, "HH:mm");
