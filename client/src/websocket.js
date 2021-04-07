@@ -23,12 +23,12 @@ export const activeUsers$ = socket$.pipe(
 
 // ACTIONS
 
-export const getMessages = () => {
-  socket$.next({ type: "join", user: "some dude" });
+export const getMessages = (user) => {
+  socket$.next({ type: "join", user });
 };
 
-export const sendMessage = (msg) => {
-  socket$.next({ type: "message", payload: msg });
+export const sendMessage = (msg, user) => {
+  socket$.next({ type: "message", payload: msg, user });
 };
 
 // CUSTOM HOOKS
