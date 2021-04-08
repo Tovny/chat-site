@@ -1,8 +1,13 @@
 import { makeStyles } from "@material-ui/core/styles";
 
 const useMessageStyles = makeStyles({
+  chatWindow: {
+    margin: 0,
+    padding: 0,
+  },
+  messageWindow: { margin: "0 0.5rem" },
   messagesContainer: {
-    height: "calc(100vh - 5rem)",
+    height: "calc(100vh - 8.5rem)",
     overflow: "auto",
     "&::-webkit-scrollbar-track": {
       backgroundColor: "rgba(0,0,0,.1)",
@@ -17,6 +22,8 @@ const useMessageStyles = makeStyles({
   messagesList: {
     listStyle: "none",
     padding: 0,
+    margin: 0,
+    marginTop: "1rem",
   },
   messageLi: {
     display: "grid",
@@ -33,9 +40,13 @@ const useMessageStyles = makeStyles({
     alignItems: "center",
     padding: "5px 10px",
   },
+  messageAvatar: {
+    marginLeft: "-0.5rem",
+  },
   visiblePostTime: {
     opacity: 1,
     alignSelf: "center",
+    marginLeft: "-1rem",
   },
   hiddenPostTime: {
     opacity: 0,
@@ -48,6 +59,16 @@ const useMessageStyles = makeStyles({
     display: "grid",
     gridTemplateColumns: "1fr 150px",
     marginTop: "1rem",
+  },
+  activeUsers: {
+    height: "calc(100vh - 4rem)",
+    padding: "0 .5rem",
+  },
+  activeUserContainer: {
+    margin: "0.75rem",
+  },
+  activeUserAvatar: {
+    marginRight: "0.5rem",
   },
 });
 

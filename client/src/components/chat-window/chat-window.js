@@ -3,23 +3,30 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import setUser from "../../redux/actions/user";
 import setMessages from "../../redux/actions/message-actions";
-import setActiveUsers from "../../redux/actions/active-users-actions";
+import {
+  setActiveUsers,
+  removeActiveUser,
+} from "../../redux/actions/active-users-actions";
 
 import {
   messages$,
   activeUsers$,
+  userLeave$,
   useObservable,
   getMessages,
   sendMessage,
 } from "../../websocket";
 
-import Messages from "./messages";
-import ActiveUsers from "./active-users";
+import Messages from "./Messages";
+import ActiveUsers from "./Active-users";
 
-import { Container, Grid } from "@material-ui/core";
+import { Container, Grid, Paper } from "@material-ui/core";
+import useMessageStyles from "./Chat-window-styles";
 
 const ChatWindow = () => {
   const dispatch = useDispatch();
+
+  const classes = useMessageStyles();
 
   const messages = useSelector((state) => state.messages);
   const activeUsers = useSelector((state) => state.activeUsers);
@@ -27,10 +34,11 @@ const ChatWindow = () => {
 
   useObservable(messages$, setMessages);
   useObservable(activeUsers$, setActiveUsers);
+  useObservable(userLeave$, removeActiveUser);
 
   useEffect(() => {
     if (!user) {
-      const randomUsername = `User.${Math.ceil(Math.random() * 1000)}`;
+      const randomUsername = `User.${Math.ceil(Math.random() * 10000)}`;
       const randomUser = {
         username: randomUsername,
         uid: randomUsername,
@@ -47,16 +55,19 @@ const ChatWindow = () => {
   }, []);
 
   return (
-    <Container disableGutters>
+    <Container maxWidth={100} className={classes.chatWindow}>
       <Grid container>
-        <Grid item xs={12} md={10}>
-          <Messages messages={messages} sendMessage={sendMessage} user={user} />
+        <Grid item xs={8} className={classes.messageWindow}>
+          <Messages
+            messages={messages}
+            sendMessage={sendMessage}
+            user={user}
+            classes={classes}
+          />
         </Grid>
-        <Grid item xs={false} md={2}>
-          <Container>
-            <ActiveUsers activeUsers={activeUsers} />
-          </Container>
-        </Grid>
+        <Paper xs={4} variant="outlined" square className={classes.activeUsers}>
+          <ActiveUsers activeUsers={activeUsers} classes={classes} />
+        </Paper>
       </Grid>
     </Container>
   );

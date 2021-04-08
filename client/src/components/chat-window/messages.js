@@ -14,10 +14,7 @@ import {
   Zoom,
 } from "@material-ui/core";
 
-import useMessageStyles from "./chat-window-styles";
-
-const Messages = ({ messages, sendMessage, user }) => {
-  const classes = useMessageStyles();
+const Messages = ({ messages, sendMessage, user, classes }) => {
   const [message, setMessage] = useState("");
   const containerRef = useRef(null);
 
@@ -60,7 +57,7 @@ const Messages = ({ messages, sendMessage, user }) => {
             variant="outlined"
             fullWidth
             value={message}
-            placeholder="type here"
+            placeholder="Your message"
             color="primary"
             onChange={(e) => setMessage(e.target.value)}
           ></TextField>
@@ -111,6 +108,7 @@ const Message = ({ message, prevMessage, index, classes }) => {
         <Avatar
           alt={`${message.username} avatar`}
           src={message.avatar}
+          className={classes.messageAvatar}
         ></Avatar>
         <Paper square variant="outlined" className={classes.postHeadingPaper}>
           <Typography variant="subtitle1" className={classes.postUsername}>
