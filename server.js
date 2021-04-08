@@ -18,20 +18,21 @@ const wss = new WebSocket.Server({ port: 5000 });
 (async () => {
   wss.on("connection", async (ws) => {
     ws.on("message", async (msg) => {
-      const { type, user, room, token, payload } = JSON.parse(msg);
+      const { type, user, room, payload } = JSON.parse(msg);
 
-      if (user !== ws.username) {
+      ws.avatar = user.avatar;
+
+      if (user.username !== ws.username || user.uid !== ws.uid) {
         wss.clients.forEach((client) => {
-          client.send(
-            JSON.stringify({ type: "userLeft", payload: ws.username })
-          );
+          client.send(JSON.stringify({ type: "userLeft", payload: ws.uid }));
         });
 
         ws.username = user.username;
+        ws.uid = user.uid;
       }
 
       if (type === "join") {
-        ws.activeRoom = room;
+        ws.activeRoom = "global";
 
         const fireMessages = await firestore
           .collection("global-messages") // change to room
@@ -51,140 +52,97 @@ const wss = new WebSocket.Server({ port: 5000 });
 
         ws.send(JSON.stringify({ type: "message", payload: messages }));
 
+        const activeUsers = new Array();
+
         wss.clients.forEach((client) => {
           if (client.activeRoom === ws.activeRoom && client !== ws) {
             client.send(
               JSON.stringify({
                 type: "newUser",
-                payload: ws.username,
-              })
-            );
-
-            ws.send(
-              JSON.stringify({
-                type: "newUser",
-                payload: client.username,
+                payload: [
+                  { username: ws.username, avatar: ws.avatar, uid: ws.uid },
+                ],
               })
             );
           }
+          activeUsers.push({
+            username: client.username,
+            avatar: client.avatar,
+            uid: client.uid,
+          });
         });
+
+        ws.send(
+          JSON.stringify({
+            type: "newUser",
+            payload: activeUsers,
+          })
+        );
       }
 
       if (type === "leave") {
         wss.clients.forEach((client) => {
-          client.send(
-            JSON.stringify({ type: "userLeft", payload: ws.username })
-          );
+          client.send(JSON.stringify({ type: "userLeft", payload: ws.uid }));
         });
       }
 
-      let message;
-
       if (type === "message") {
-        message = {
+        const message = {
           msg: payload.msg,
           username: user.username,
           uid: user.uid,
           avatar: user.avatar,
           time: admin.firestore.Timestamp.now(),
         };
+
+        const res = await firestore.collection("global-messages").add(message);
+
+        message.id = res.id;
+
+        wss.clients.forEach((client) => {
+          client.send(
+            JSON.stringify({
+              type: "message",
+              payload: [message],
+            })
+          );
+        });
       }
 
-      if (token) {
-        try {
-          const decodedToken = await admin.auth().verifyIdToken(token);
-          const uId = decodedToken.uid;
+      if (type === "login") {
+        let doc = (
+          await firestore.collection("users").doc(payload).get()
+        ).data();
 
-          if (type === "message") {
-            const res = await firestore
-              .collection("global-messages")
-              .add(message);
+        if (!doc) {
+          const newUser = {
+            username: user.displayName,
+            avatar: user.photoURL,
+            uid: user.uid,
+            rooms: ["global"],
+          };
 
-            message.id = res.id;
+          await firestore.collection("users").doc(user.uid).set(newUser);
 
-            wss.clients.forEach((client) => {
-              client.send(
-                JSON.stringify({
-                  type: "message",
-                  payload: [message],
-                })
-              );
-            });
-          }
-
-          if (type === "deleteMessage") {
-            console.log("tu?");
-            console.log(payload);
-            firestore.collection("global-messages").doc(payload).delete();
-            wss.clients.forEach((client) => {
-              client.send(
-                JSON.stringify({
-                  type: "deleteMessage",
-                  payload,
-                })
-              );
-            });
-          }
-
-          if (type === "deleteMessage") {
-            firestore.collection("global-messages").doc(payload.id).delete();
-            wss.clients.forEach((client) => {
-              client.send(
-                JSON.stringify({
-                  type: "deleteMessage",
-                  payload,
-                })
-              );
-            });
-          }
-
-          if (type === "login") {
-            const doc = (
-              await firestore.collection("users").doc(decodedToken.uid).get()
-            ).data();
-
-            doc.uId = decodedToken.uid;
-
-            ws.send(JSON.stringify({ payload: doc, type: "login" }));
-          }
-
-          if (type === "changeUser") {
-            firestore.collection("users").doc(uId).set(
-              {
-                nickname: decodedToken.name,
-                picture: decodedToken.picture,
-              },
-              { merge: true }
-            );
-
-            const doc = (
-              await firestore.collection("users").doc(decodedToken.uid).get()
-            ).data();
-
-            doc.uId = decodedToken.uid;
-
-            ws.send(JSON.stringify({ payload: doc, type: "login" }));
-          }
-        } catch (err) {
-          console.log(err);
+          doc = (await firestore.collection("users").doc(payload).get()).data();
         }
-      } else {
-        if (type === "message") {
-          const res = await firestore
-            .collection("global-messages")
-            .add(message);
 
-          message.id = res.id;
+        ws.send(JSON.stringify({ payload: doc, type: "login" }));
 
-          wss.clients.forEach((client) => {
-            client.send(
-              JSON.stringify({
-                type: "message",
-                payload: [message],
-              })
-            );
-          });
-        }
+        ws.username = doc.username;
+        ws.avatar = doc.avatar;
+        ws.uid = doc.uid;
+
+        wss.clients.forEach((client) => {
+          client.send(
+            JSON.stringify({
+              type: "newUser",
+              payload: [
+                { username: ws.username, avatar: ws.avatar, uid: ws.uid },
+              ],
+            })
+          );
+        });
       }
     });
 
@@ -192,10 +150,8 @@ const wss = new WebSocket.Server({ port: 5000 });
 
     ws.on("close", () => {
       wss.clients.forEach((client) => {
-        client.send(JSON.stringify({ type: "userLeft", payload: ws.username }));
+        client.send(JSON.stringify({ type: "userLeft", payload: ws.uid }));
       });
     });
   });
 })();
-
-//server.listen(3000, () => console.log("server live"));
