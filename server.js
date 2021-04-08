@@ -23,9 +23,16 @@ const wss = new WebSocket.Server({ port: 5000 });
       ws.avatar = user.avatar;
 
       if (user.username !== ws.username || user.uid !== ws.uid) {
+        let otherSockets = false;
+
         wss.clients.forEach((client) => {
-          client.send(JSON.stringify({ type: "userLeft", payload: ws.uid }));
+          if (client.uid === ws.uid && client !== ws) otherSockets = true;
         });
+
+        if (!otherSockets)
+          wss.clients.forEach((client) => {
+            client.send(JSON.stringify({ type: "userLeft", payload: ws.uid }));
+          });
 
         ws.username = user.username;
         ws.uid = user.uid;
@@ -53,6 +60,7 @@ const wss = new WebSocket.Server({ port: 5000 });
         ws.send(JSON.stringify({ type: "message", payload: messages }));
 
         const activeUsers = new Array();
+        const done = new Array();
 
         wss.clients.forEach((client) => {
           if (client.activeRoom === ws.activeRoom && client !== ws) {
@@ -65,11 +73,15 @@ const wss = new WebSocket.Server({ port: 5000 });
               })
             );
           }
-          activeUsers.push({
-            username: client.username,
-            avatar: client.avatar,
-            uid: client.uid,
-          });
+          if (!done.includes(client.uid)) {
+            activeUsers.push({
+              username: client.username,
+              avatar: client.avatar,
+              uid: client.uid,
+            });
+
+            done.push(client.uid);
+          }
         });
 
         ws.send(
@@ -81,9 +93,16 @@ const wss = new WebSocket.Server({ port: 5000 });
       }
 
       if (type === "leave") {
+        let otherSockets = false;
+
         wss.clients.forEach((client) => {
-          client.send(JSON.stringify({ type: "userLeft", payload: ws.uid }));
+          if (client.uid === ws.uid && client !== ws) otherSockets = true;
         });
+
+        if (!otherSockets)
+          wss.clients.forEach((client) => {
+            client.send(JSON.stringify({ type: "userLeft", payload: ws.uid }));
+          });
       }
 
       if (type === "message") {
@@ -149,9 +168,16 @@ const wss = new WebSocket.Server({ port: 5000 });
     ws.on("error", (err) => ws.send(err));
 
     ws.on("close", () => {
+      let otherSockets = false;
+
       wss.clients.forEach((client) => {
-        client.send(JSON.stringify({ type: "userLeft", payload: ws.uid }));
+        if (client.uid === ws.uid && client !== ws) otherSockets = true;
       });
+
+      if (!otherSockets)
+        wss.clients.forEach((client) => {
+          client.send(JSON.stringify({ type: "userLeft", payload: ws.uid }));
+        });
     });
   });
 })();
