@@ -10,26 +10,21 @@ const WS_ENDPOINT = "ws://localhost:5000";
 
 export const socket$ = new webSocket(WS_ENDPOINT);
 
-export const messages$ = socket$.pipe(
-  filter((msg) => msg.type === "message"),
-  map((msg) => msg.payload),
-  catchError((err) => console.log(err))
-);
+const createObservable = (type) => {
+  return socket$.pipe(
+    filter((msg) => msg.type === type),
+    map((msg) => msg.payload),
+    catchError((err) => console.log(err))
+  );
+};
 
-export const activeUsers$ = socket$.pipe(
-  filter((msg) => msg.type === "newUser"),
-  map((msg) => msg.payload)
-);
+export const messages$ = createObservable("message");
 
-export const userLeave$ = socket$.pipe(
-  filter((msg) => msg.type === "userLeft"),
-  map((msg) => msg.payload)
-);
+export const activeUsers$ = createObservable("newUser");
 
-export const login$ = socket$.pipe(
-  filter((msg) => msg.type === "login"),
-  map((msg) => msg.payload)
-);
+export const userLeave$ = createObservable("userLeft");
+
+export const login$ = createObservable("login");
 
 // ACTIONS
 
@@ -46,7 +41,7 @@ export const sendLogin = (uid, user) => {
 };
 
 export const sendLogout = (user) => {
-  socket$.next({ type: "userLeft", user });
+  socket$.next({ type: "logout", user });
 };
 
 // CUSTOM HOOKS

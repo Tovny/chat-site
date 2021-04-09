@@ -7,7 +7,7 @@ const Header = () => {
   const classes = headerStyles();
 
   return (
-    <AppBar position="sticky" color="secondary">
+    <AppBar position="sticky">
       <Toolbar className={classes.headerToolbar}>
         <Typography variant="h5">Global room</Typography>
         <UserControl />

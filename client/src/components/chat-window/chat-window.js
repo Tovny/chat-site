@@ -55,7 +55,7 @@ const ChatWindow = () => {
   }, []);
 
   return (
-    <Container maxWidth={100} className={classes.chatWindow}>
+    <Container maxWidth="xl" className={classes.chatWindow}>
       <Grid container>
         <Grid item xs={8} className={classes.messageWindow}>
           <Messages

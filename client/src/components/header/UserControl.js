@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 import { Button, Menu, Typography, Avatar } from "@material-ui/core";
 
@@ -14,38 +14,40 @@ import { useSelector } from "react-redux";
 const UserControl = () => {
   const classes = headerStyles();
   const user = useSelector((state) => state.user);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const buttonRef = useRef(null);
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleClick = () => {
+    setMenuOpen(true);
   };
 
   const handleClose = () => {
-    setAnchorEl(null);
+    setMenuOpen(false);
   };
 
   return (
     <>
-      <IfFirebaseAuthed>
-        {() => (
-          <Button onClick={handleClick}>
-            <Typography variant="h6">{user.username}</Typography>
-            <Avatar
-              src={user.avatar}
-              alt={user.username}
-              className={classes.userAvatar}
-            ></Avatar>
-          </Button>
-        )}
-      </IfFirebaseAuthed>
-      <IfFirebaseUnAuthed>
-        {() => <Button onClick={handleClick}>Sign In</Button>}
-      </IfFirebaseUnAuthed>
+      <Button onClick={handleClick} color="inherit" ref={buttonRef}>
+        <IfFirebaseAuthed>
+          {() => (
+            <>
+              <Typography variant="subtitle1">{user.username}</Typography>
+              <Avatar
+                variant="rounded"
+                src={user.avatar}
+                alt={user.username}
+                className={classes.userAvatar}
+              ></Avatar>
+            </>
+          )}
+        </IfFirebaseAuthed>
+        <IfFirebaseUnAuthed>{() => "Sign In"}</IfFirebaseUnAuthed>
+      </Button>
       <Menu
-        anchorEl={anchorEl}
+        anchorEl={buttonRef.current}
         onClose={handleClose}
         keepMounted
-        open={Boolean(anchorEl)}
+        open={menuOpen}
       >
         <SignIn />
       </Menu>
