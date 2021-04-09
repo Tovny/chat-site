@@ -163,6 +163,19 @@ const wss = new WebSocket.Server({ port: 5000 });
           );
         });
       }
+
+      if (type === "logout") {
+        wss.clients.forEach((client) => {
+          client.send(
+            JSON.stringify({
+              type: "newUser",
+              payload: [
+                { username: ws.username, avatar: ws.avatar, uid: ws.uid },
+              ],
+            })
+          );
+        });
+      }
     });
 
     ws.on("error", (err) => ws.send(err));
