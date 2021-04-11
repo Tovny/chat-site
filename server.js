@@ -20,7 +20,7 @@ const wss = new WebSocket.Server({ port: 5000 });
     ws.on("message", async (msg) => {
       const { type, user, room, payload } = JSON.parse(msg);
 
-      ws.avatar = user.avatar;
+      // TO JE GROZNO!!!
 
       if (user.username !== ws.username || user.uid !== ws.uid) {
         let otherSockets = false;
@@ -38,11 +38,27 @@ const wss = new WebSocket.Server({ port: 5000 });
         ws.uid = user.uid;
       }
 
-      if (type === "join") {
-        ws.activeRoom = "global";
+      if (!room || !ws.room) ws.room = "global-messages";
 
+      if (ws.room !== room) {
+        let otherSockets = false;
+
+        wss.clients.forEach((client) => {
+          if (client.uid === ws.uid && client !== ws && client.room === ws.room)
+            otherSockets = true;
+        });
+
+        if (!otherSockets)
+          wss.clients.forEach((client) => {
+            client.send(JSON.stringify({ type: "userLeft", payload: ws.uid }));
+          });
+
+        ws.room = room;
+      }
+
+      if (type === "join") {
         const fireMessages = await firestore
-          .collection("global-messages") // change to room
+          .collection(room) // change to room
           .orderBy("time", "asc")
           .limitToLast(25)
           .get();
@@ -63,7 +79,7 @@ const wss = new WebSocket.Server({ port: 5000 });
         const done = new Array();
 
         wss.clients.forEach((client) => {
-          if (client.activeRoom === ws.activeRoom && client !== ws) {
+          if (client.room === ws.room && client !== ws) {
             client.send(
               JSON.stringify({
                 type: "newUser",
@@ -73,7 +89,7 @@ const wss = new WebSocket.Server({ port: 5000 });
               })
             );
           }
-          if (!done.includes(client.uid)) {
+          if (!done.includes(client.uid) && client.room === ws.room) {
             activeUsers.push({
               username: client.username,
               avatar: client.avatar,
@@ -114,17 +130,18 @@ const wss = new WebSocket.Server({ port: 5000 });
           time: admin.firestore.Timestamp.now(),
         };
 
-        const res = await firestore.collection("global-messages").add(message);
+        const res = await firestore.collection(room).add(message);
 
         message.id = res.id;
 
         wss.clients.forEach((client) => {
-          client.send(
-            JSON.stringify({
-              type: "message",
-              payload: [message],
-            })
-          );
+          if (client.room === ws.room)
+            client.send(
+              JSON.stringify({
+                type: "message",
+                payload: [message],
+              })
+            );
         });
       }
 
@@ -138,7 +155,7 @@ const wss = new WebSocket.Server({ port: 5000 });
             username: user.displayName,
             avatar: user.photoURL,
             uid: user.uid,
-            rooms: ["global"],
+            rooms: [],
           };
 
           await firestore.collection("users").doc(user.uid).set(newUser);
@@ -153,27 +170,29 @@ const wss = new WebSocket.Server({ port: 5000 });
         ws.uid = doc.uid;
 
         wss.clients.forEach((client) => {
-          client.send(
-            JSON.stringify({
-              type: "newUser",
-              payload: [
-                { username: ws.username, avatar: ws.avatar, uid: ws.uid },
-              ],
-            })
-          );
+          if (client.room === ws.room)
+            client.send(
+              JSON.stringify({
+                type: "newUser",
+                payload: [
+                  { username: ws.username, avatar: ws.avatar, uid: ws.uid },
+                ],
+              })
+            );
         });
       }
 
       if (type === "logout") {
         wss.clients.forEach((client) => {
-          client.send(
-            JSON.stringify({
-              type: "newUser",
-              payload: [
-                { username: ws.username, avatar: ws.avatar, uid: ws.uid },
-              ],
-            })
-          );
+          if (client.room === ws.room)
+            client.send(
+              JSON.stringify({
+                type: "newUser",
+                payload: [
+                  { username: ws.username, avatar: ws.avatar, uid: ws.uid },
+                ],
+              })
+            );
         });
       }
     });

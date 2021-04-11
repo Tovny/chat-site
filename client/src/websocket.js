@@ -28,12 +28,12 @@ export const login$ = createObservable("login");
 
 // ACTIONS
 
-export const getMessages = (user) => {
-  socket$.next({ type: "join", user });
+export const getMessages = (user, room) => {
+  socket$.next({ type: "join", user, room });
 };
 
-export const sendMessage = (msg, user) => {
-  socket$.next({ type: "message", payload: msg, user });
+export const sendMessage = (msg, user, room) => {
+  socket$.next({ type: "message", payload: msg, user, room });
 };
 
 export const sendLogin = (uid, user) => {
