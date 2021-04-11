@@ -11,3 +11,9 @@ export const removeActiveUser = (payload) => {
     payload,
   };
 };
+
+export const resetActiveUsers = () => {
+  return {
+    type: "RESET_ACTIVE_USER",
+  };
+};

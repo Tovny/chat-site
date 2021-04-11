@@ -20,6 +20,9 @@ const activeUsersReducer = (state = [], action) => {
     case "REMOVE_ACTIVE_USER": {
       return state.filter((user) => user.uid !== action.payload);
     }
+    case "RESET_ACTIVE_USER": {
+      return [];
+    }
     default:
       return state;
   }

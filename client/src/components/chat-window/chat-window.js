@@ -1,11 +1,15 @@
 import { useEffect } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
-import setUser from "../../redux/actions/user";
-import setMessages from "../../redux/actions/message-actions";
+import setUser from "../../redux/actions/user-actions";
+import {
+  setMessages,
+  resetMessages,
+} from "../../redux/actions/message-actions";
 import {
   setActiveUsers,
   removeActiveUser,
+  resetActiveUsers,
 } from "../../redux/actions/active-users-actions";
 
 import {
@@ -31,6 +35,7 @@ const ChatWindow = () => {
   const messages = useSelector((state) => state.messages);
   const activeUsers = useSelector((state) => state.activeUsers);
   const user = useSelector((state) => state.user);
+  const room = useSelector((state) => state.room);
 
   useObservable(messages$, setMessages);
   useObservable(activeUsers$, setActiveUsers);
@@ -46,13 +51,23 @@ const ChatWindow = () => {
       };
       dispatch(setUser(randomUser));
 
-      getMessages(randomUser);
+      getMessages(randomUser, room);
     } else {
-      getMessages(user);
+      getMessages(user, room);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(resetMessages());
+      dispatch(resetActiveUsers());
+      getMessages(user, room);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [room]);
 
   return (
     <Container maxWidth="xl" className={classes.chatWindow}>
@@ -62,6 +77,7 @@ const ChatWindow = () => {
             messages={messages}
             sendMessage={sendMessage}
             user={user}
+            room={room}
             classes={classes}
           />
         </Grid>

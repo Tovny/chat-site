@@ -14,7 +14,7 @@ import {
   Zoom,
 } from "@material-ui/core";
 
-const Messages = ({ messages, sendMessage, user, classes }) => {
+const Messages = ({ messages, sendMessage, user, room, classes }) => {
   const [message, setMessage] = useState("");
   const containerRef = useRef(null);
 
@@ -47,7 +47,8 @@ const Messages = ({ messages, sendMessage, user, classes }) => {
               {
                 msg: message,
               },
-              user
+              user,
+              room
             );
           setMessage("");
         }}
