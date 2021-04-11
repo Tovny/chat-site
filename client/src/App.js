@@ -4,7 +4,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 
 import { useDispatch } from "react-redux";
-import setUser from "./redux/actions/user";
+import setUser from "./redux/actions/user-actions";
 
 import { useObservable, login$, sendLogin, sendLogout } from "./websocket";
 
