@@ -13,6 +13,7 @@ import {
 } from "../../redux/actions/active-users-actions";
 
 import {
+  userSubject$,
   messages$,
   activeUsers$,
   userLeave$,
@@ -68,6 +69,10 @@ const ChatWindow = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [room]);
+
+  useEffect(() => {
+    userSubject$.next(user);
+  }, [user]);
 
   return (
     <Container maxWidth="xl" className={classes.chatWindow}>

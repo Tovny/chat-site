@@ -4,7 +4,7 @@ import { Button, Menu, Typography, Avatar } from "@material-ui/core";
 
 import headerStyles from "./Header-styles";
 
-import SignUp from "./SignUp";
+//import SignUp from "./SignUp";
 import SignIn from "./SignIn";
 
 import { IfFirebaseAuthed, IfFirebaseUnAuthed } from "@react-firebase/auth";

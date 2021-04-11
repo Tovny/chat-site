@@ -54,7 +54,7 @@ const wss = new WebSocket.Server({ port: 5000 });
         const done = new Array();
 
         wss.clients.forEach((client) => {
-          if (!done.includes(client.uid)) {
+          if (!done.includes(client.uid) && client.room === ws.room) {
             activeUsers.push({
               username: client.username,
               avatar: client.avatar,
@@ -80,19 +80,21 @@ const wss = new WebSocket.Server({ port: 5000 });
 
         if (!oldUser) {
           wss.clients.forEach((client) => {
-            client.send(
-              JSON.stringify({ type: "newUser", payload: [newUser] })
-            );
+            if (client.room === ws.room)
+              client.send(
+                JSON.stringify({ type: "newUser", payload: [newUser] })
+              );
           });
         } else {
           wss.clients.forEach((client) => {
             if (client.uid === ws.uid && client !== ws) otherSockets = true;
-            client.send(
-              JSON.stringify({
-                type: "newUser",
-                payload: [newUser],
-              })
-            );
+            if (client.room === ws.room)
+              client.send(
+                JSON.stringify({
+                  type: "newUser",
+                  payload: [newUser],
+                })
+              );
           });
 
           if (!otherSockets) {
@@ -112,6 +114,15 @@ const wss = new WebSocket.Server({ port: 5000 });
       if (type === "roomChange") {
         wss.clients.forEach((client) => {
           client.send(JSON.stringify({ type: "userLeft", payload: ws.uid }));
+          if (client.room === newRoom)
+            client.send(
+              JSON.stringify({
+                type: "newUser",
+                payload: [
+                  { username: ws.username, uid: ws.uid, avatar: ws.avatar },
+                ],
+              })
+            );
         });
 
         ws.room = newRoom;
@@ -131,12 +142,13 @@ const wss = new WebSocket.Server({ port: 5000 });
         message.id = res.id;
 
         wss.clients.forEach((client) => {
-          client.send(
-            JSON.stringify({
-              type: "message",
-              payload: [message],
-            })
-          );
+          if (client.room === ws.room)
+            client.send(
+              JSON.stringify({
+                type: "message",
+                payload: [message],
+              })
+            );
         });
       }
 

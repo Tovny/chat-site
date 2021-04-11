@@ -1,5 +1,6 @@
+import { Subject } from "rxjs";
 import { webSocket } from "rxjs/webSocket";
-import { catchError, map, filter } from "rxjs/operators";
+import { catchError, map, filter, pairwise } from "rxjs/operators";
 
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -9,6 +10,8 @@ const WS_ENDPOINT = "ws://localhost:5000";
 // OBSERVABLES
 
 export const socket$ = new webSocket(WS_ENDPOINT);
+export const userSubject$ = new Subject().pipe(pairwise());
+export const roomSubject$ = new Subject().pipe(pairwise());
 
 const createObservable = (type) => {
   return socket$.pipe(
@@ -42,6 +45,14 @@ export const sendLogin = (uid, user) => {
 
 export const sendLogout = (user) => {
   socket$.next({ type: "logout", user });
+};
+
+export const sendUserChange = (oldUser, newUser) => {
+  socket$.next({ type: "userChange", oldUser, newUser });
+};
+
+export const sendRoomChange = (oldRoom, newRoom) => {
+  socket$.next({ type: "roomChange", oldRoom, newRoom });
 };
 
 // CUSTOM HOOKS

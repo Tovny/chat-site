@@ -3,10 +3,18 @@ import { useEffect } from "react";
 import firebase from "firebase/app";
 import "firebase/auth";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import setUser from "./redux/actions/user-actions";
 
-import { useObservable, login$, sendLogin, sendLogout } from "./websocket";
+import {
+  useObservable,
+  login$,
+  userSubject$,
+  roomSubject$,
+  sendLogin,
+  sendUserChange,
+  sendRoomChange,
+} from "./websocket";
 
 import ChatWindow from "./components/chat-window/Chat-window";
 import Header from "./components/header/Header";
@@ -16,6 +24,7 @@ import { CssBaseline, Grid } from "@material-ui/core";
 
 function App() {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
 
   useObservable(login$, setUser);
 
@@ -25,20 +34,33 @@ function App() {
         sendLogin(user.uid, user);
       } else {
         const randomUsername = `User.${Math.ceil(Math.random() * 10000)}`;
-
         const randomUser = {
           username: randomUsername,
           uid: randomUsername,
           avatar: null,
         };
-
         dispatch(setUser(randomUser));
-        sendLogout(randomUser);
       }
     });
 
+    userSubject$.subscribe(([oldUser, newUser]) => {
+      sendUserChange(oldUser, newUser);
+      dispatch(setUser(newUser));
+    });
+
+    roomSubject$.subscribe(([oldRoom, newRoom]) => {
+      sendRoomChange(oldRoom, newRoom);
+    });
+
+    return () => {
+      userSubject$.unsubscribe();
+      roomSubject$.unsubscribe();
+    };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {}, []);
 
   return (
     <>
