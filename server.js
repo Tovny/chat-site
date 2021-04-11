@@ -29,7 +29,7 @@ const wss = new WebSocket.Server({ port: 5000 });
         newRoom,
       } = JSON.parse(msg);
 
-      if (!room || !ws.room) ws.room = "global-messages";
+      if (!ws.room) ws.room = "global-messages";
 
       if (type === "join") {
         const fireMessages = await firestore
