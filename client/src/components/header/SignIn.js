@@ -1,4 +1,5 @@
-import React from "react";
+import firebase from "firebase/app";
+
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
@@ -7,8 +8,6 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-
-import firebase from "firebase/app";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -31,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn() {
+export default function SignIn({ setActivePage }) {
   const classes = useStyles();
 
   return (
@@ -41,21 +40,7 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <button
-          onClick={async () => {
-            const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
-            firebase.auth().signInWithPopup(googleAuthProvider);
-          }}
-        >
-          Google
-        </button>
-        <button
-          onClick={() => {
-            firebase.auth().signOut();
-          }}
-        >
-          Sign Out
-        </button>
+
         <form className={classes.form} noValidate>
           <TextField
             variant="outlined"
@@ -79,6 +64,22 @@ export default function SignIn() {
             id="password"
             autoComplete="current-password"
           />
+          <Grid container>
+            <Grid item xs>
+              <Link href="#" variant="body2">
+                Forgot password?
+              </Link>
+            </Grid>
+            <Grid item>
+              <Link
+                href="#"
+                variant="body2"
+                onClick={() => setActivePage("signUp")}
+              >
+                {"Don't have an account? Sign Up"}
+              </Link>
+            </Grid>
+          </Grid>
           <Button
             type="submit"
             fullWidth
@@ -88,19 +89,17 @@ export default function SignIn() {
           >
             Sign In
           </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
         </form>
+        <Button
+          variant="contained"
+          fullWidth
+          onClick={async () => {
+            const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithPopup(googleAuthProvider);
+          }}
+        >
+          Sign In with Google
+        </Button>
       </div>
     </Container>
   );
