@@ -112,18 +112,25 @@ const wss = new WebSocket.Server({ port: 5000 });
       }
 
       if (type === "roomChange") {
+        let otherSockets = false;
+
         wss.clients.forEach((client) => {
-          client.send(JSON.stringify({ type: "userLeft", payload: ws.uid }));
-          if (client.room === newRoom)
-            client.send(
-              JSON.stringify({
-                type: "newUser",
-                payload: [
-                  { username: ws.username, uid: ws.uid, avatar: ws.avatar },
-                ],
-              })
-            );
+          if (client.uid === ws.uid && client !== ws) otherSockets = true;
         });
+
+        if (!otherSockets)
+          wss.clients.forEach((client) => {
+            client.send(JSON.stringify({ type: "userLeft", payload: ws.uid }));
+            if (client.room === newRoom)
+              client.send(
+                JSON.stringify({
+                  type: "newUser",
+                  payload: [
+                    { username: ws.username, uid: ws.uid, avatar: ws.avatar },
+                  ],
+                })
+              );
+          });
 
         ws.room = newRoom;
       }
