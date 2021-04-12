@@ -55,6 +55,10 @@ export const sendRoomChange = (oldRoom, newRoom) => {
   socket$.next({ type: "roomChange", oldRoom, newRoom });
 };
 
+export const createEmailUser = (user, payload) => {
+  socket$.next({ type: "newEmailUser", payload, user });
+};
+
 // CUSTOM HOOKS
 
 export const useObservable = (observable, setter) => {

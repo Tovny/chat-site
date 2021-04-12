@@ -1,4 +1,9 @@
-import React from "react";
+import { useState } from "react";
+
+import firebase from "firebase";
+
+import { createEmailUser } from "../../websocket";
+
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Link from "@material-ui/core/Link";
@@ -24,8 +29,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignUp() {
+export default function SignUp({ setActivePage }) {
   const classes = useStyles();
+
+  const [username, setUsername] = useState("");
+  const [avatar, setAvatar] = useState(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then((newUser) => {
+        const uid = newUser.user.uid;
+        createEmailUser(uid, {
+          username,
+          uid,
+          avatar,
+        });
+      });
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -33,7 +58,7 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -45,6 +70,22 @@ export default function SignUp() {
                 id="userName"
                 label="User Name"
                 autoFocus
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                autoComplete="avatar"
+                name="avatar"
+                variant="outlined"
+                required
+                fullWidth
+                id="avatar"
+                label="Avatar"
+                autoFocus
+                value={avatar}
+                onChange={(e) => setAvatar(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -56,6 +97,8 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -68,6 +111,8 @@ export default function SignUp() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </Grid>
           </Grid>
@@ -82,7 +127,11 @@ export default function SignUp() {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link
+                href="#"
+                variant="body2"
+                onClick={() => setActivePage("signIn")}
+              >
                 Already have an account? Sign in
               </Link>
             </Grid>
