@@ -159,6 +159,14 @@ const wss = new WebSocket.Server({ port: 5000 });
         });
       }
 
+      if (type === "newEmailUser") {
+        let doc = await firestore
+          .collection("users")
+          .doc(user)
+          .set(payload, { merge: true });
+        ws.send(JSON.stringify({ payload: doc, type: "login" }));
+      }
+
       if (type === "login") {
         let doc = (
           await firestore.collection("users").doc(payload).get()
