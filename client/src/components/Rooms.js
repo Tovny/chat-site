@@ -1,9 +1,15 @@
-import { Paper } from "@material-ui/core";
-
 import { useSelector, useDispatch } from "react-redux";
 import setRoom from "../redux/actions/room-actions";
 
-import { roomSubject$ } from "../websocket";
+import { roomSubject$, createNewRoom } from "../websocket";
+
+import {
+  Button,
+  ButtonGroup,
+  Container,
+  Paper,
+  Typography,
+} from "@material-ui/core";
 
 const Rooms = () => {
   const dispatch = useDispatch();
@@ -12,37 +18,52 @@ const Rooms = () => {
   const room = useSelector((state) => state.room);
 
   return (
-    <Paper
-      style={{ justifySelf: "right", padding: "0 1rem" }}
-      variant="outlined"
-      square
-    >
-      <h2>subbed rooms</h2>
-      <h5
-        onClick={() => {
-          if (room !== "global-messages") roomSubject$.next("global-messages");
-          dispatch(setRoom("global-messages"));
-        }}
-      >
-        GLOOBAL
-      </h5>
-      <h5
-        onClick={() => {
-          if (room !== "notGlobal") roomSubject$.next("notGlobal");
-          dispatch(setRoom("notGlobal"));
-        }}
-      >
-        notGloba
-      </h5>
-      <h5
-        onClick={() => {
-          if (room !== "prvi") roomSubject$.next("prvi");
-          dispatch(setRoom("prvi"));
-        }}
-      >
-        prvi
-      </h5>
-    </Paper>
+    <Container style={{ justifySelf: "right", padding: "1rem 1rem" }}>
+      <Paper square variant="outlined" style={{ height: "calc(100vh - 6rem)" }}>
+        <Button
+          fullWidth
+          variant="contained"
+          color="secondary"
+          onClick={() => {
+            if (room !== "global-messages")
+              roomSubject$.next("global-messages");
+            dispatch(setRoom("global-messages"));
+          }}
+        >
+          Global Chat
+        </Button>
+
+        <Typography variant="body1">Subscribed Rooms</Typography>
+        <ButtonGroup orientation="vertical" fullWidth>
+          {user &&
+            user.rooms &&
+            user.rooms.map((subbedRoom) => {
+              return (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    if (subbedRoom !== room) roomSubject$.next(subbedRoom);
+                    dispatch(setRoom(subbedRoom));
+                  }}
+                >
+                  {subbedRoom}
+                </Button>
+              );
+            })}
+        </ButtonGroup>
+        <ButtonGroup fullWidth>
+          <Button>Join Room</Button>
+          <Button
+            onClick={() => {
+              createNewRoom("Neki Novi Room z Buttnom", user);
+            }}
+          >
+            Create New Room
+          </Button>
+        </ButtonGroup>
+      </Paper>
+    </Container>
   );
 };
 

@@ -160,51 +160,60 @@ const wss = new WebSocket.Server({ port: 5000 });
       }
 
       if (type === "newEmailUser") {
-        const users = await firestore.collection("users").get();
-        const usernames = new Array();
-
-        users.forEach((user) => {
-          const data = user.data();
-          usernames.push(data.username);
-        });
-
-        if (usernames.includes(payload.username)) {
+        if (!payload.username) {
           ws.send(
             JSON.stringify({
               type: "registrationError",
-              payload: { type: Error, message: "Username taken" },
+              payload: { type: Error, message: "Please enter a username." },
             })
           );
         } else {
-          try {
-            const res = await admin.auth().createUser({
-              email: payload.email,
-              password: payload.password,
-              displayName: payload.username,
-            });
+          const users = await firestore.collection("users").get();
+          const usernames = new Array();
 
-            await firestore.collection("users").doc(res.uid).set(
-              {
-                username: payload.username,
-                avatar: payload.avatar,
-                uid: res.uid,
-                rooms: [],
-              },
-              { merge: true }
-            );
+          users.forEach((user) => {
+            const data = user.data();
+            usernames.push(data.username);
+          });
 
-            const token = await admin.auth().createCustomToken(res.uid);
-
+          if (usernames.includes(payload.username)) {
             ws.send(
               JSON.stringify({
-                payload: token,
-                type: "registrationSuccess",
+                type: "registrationError",
+                payload: { type: Error, message: "Username taken." },
               })
             );
-          } catch (err) {
-            ws.send(
-              JSON.stringify({ type: "registrationError", payload: err })
-            );
+          } else {
+            try {
+              const res = await admin.auth().createUser({
+                email: payload.email,
+                password: payload.password,
+                displayName: payload.username,
+              });
+
+              await firestore.collection("users").doc(res.uid).set(
+                {
+                  username: payload.username,
+                  avatar: payload.avatar,
+                  uid: res.uid,
+                  rooms: [],
+                },
+                { merge: true }
+              );
+
+              const token = await admin.auth().createCustomToken(res.uid);
+
+              ws.send(
+                JSON.stringify({
+                  payload: token,
+                  type: "registrationSuccess",
+                })
+              );
+            } catch (err) {
+              ws.send(
+                JSON.stringify({ type: "registrationError", payload: err })
+              );
+            }
           }
         }
       }
@@ -241,6 +250,35 @@ const wss = new WebSocket.Server({ port: 5000 });
             })
           );
         });
+      }
+
+      if (type === "createRoom") {
+        // const rooms = await firestore.listCollections();
+
+        //if (!rooms.includes(newRoom)) {
+        /*   const newPost = {
+          user: "whater",
+          msg: "Prvi post!",
+          time: admin.firestore.Timestamp.now(),
+        };
+        await firestore.collection(newRoom).add(newPost);*/
+
+        const doc = await firestore.collection("users").doc(user.uid).get();
+
+        const dbUser = doc.data();
+
+        dbUser.rooms.push(newRoom);
+
+        await firestore
+          .collection("users")
+          .doc(user.uid)
+          .set({ rooms: dbUser.rooms }, { merge: true });
+
+        const newo = await firestore.collection("users").doc(user.uid).get();
+        const doco = newo.data();
+
+        ws.send(JSON.stringify({ payload: doco, type: "login" }));
+        //  }
       }
     });
 
