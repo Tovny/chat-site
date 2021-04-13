@@ -13,6 +13,7 @@ import headerStyles from "./Header-styles";
 
 import SignUp from "./SignUp";
 import SignIn from "./SignIn";
+import PasswordReset from "./PasswordReset";
 
 import { IfFirebaseAuthed, IfFirebaseUnAuthed } from "@react-firebase/auth";
 
@@ -76,10 +77,10 @@ const UserControl = () => {
         keepMounted
         open={menuOpen}
       >
-        {activePage === "signIn" ? (
-          <SignIn setActivePage={setActivePage} />
-        ) : (
-          <SignUp setActivePage={setActivePage} />
+        {activePage === "signIn" && <SignIn setActivePage={setActivePage} />}
+        {activePage === "signUp" && <SignUp setActivePage={setActivePage} />}
+        {activePage === "passwordReset" && (
+          <PasswordReset setActivePage={setActivePage} />
         )}
       </Menu>
     </>

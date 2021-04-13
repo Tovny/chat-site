@@ -96,7 +96,11 @@ export default function SignIn({ setActivePage }) {
           />
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
+              <Link
+                href="#"
+                variant="body2"
+                onClick={() => setActivePage("passwordReset")}
+              >
                 Forgot password?
               </Link>
             </Grid>
