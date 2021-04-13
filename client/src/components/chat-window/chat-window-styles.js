@@ -40,13 +40,10 @@ const useMessageStyles = makeStyles({
     alignItems: "center",
     padding: "5px 10px",
   },
-  messageAvatar: {
-    marginLeft: "-0.5rem",
-  },
+
   visiblePostTime: {
     opacity: 1,
     alignSelf: "center",
-    marginLeft: "-1rem",
   },
   hiddenPostTime: {
     opacity: 0,

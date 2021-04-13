@@ -96,7 +96,7 @@ const Message = ({ message, prevMessage, index, classes }) => {
           variant="subtitle2"
           className={visible ? classes.visiblePostTime : classes.hiddenPostTime}
         >
-          {formatDate(messageDate)}
+          {formatDate(messageDate, false, false, true)}
         </Typography>
       </Tooltip>
       <Typography variant="subtitle1" className={classes.messageText}>
@@ -109,7 +109,6 @@ const Message = ({ message, prevMessage, index, classes }) => {
         <Avatar
           alt={`${message.username} avatar`}
           src={message.avatar}
-          className={classes.messageAvatar}
         ></Avatar>
         <Paper square variant="outlined" className={classes.postHeadingPaper}>
           <Typography variant="subtitle1" className={classes.postUsername}>
@@ -135,17 +134,22 @@ const Message = ({ message, prevMessage, index, classes }) => {
   );
 };
 
-const formatDate = (date, header = false, tooltip = false) => {
+const formatDate = (
+  date,
+  header = false,
+  tooltip = false,
+  sideDate = false
+) => {
   if (tooltip) {
     return format(date, "iii, LLL do yyyy 'at' HH:mm");
   } else if (isToday(date) && header) {
     return format(date, "'Today', HH:mm");
   } else if (isToday(date)) {
     return format(date, "HH:mm");
-  } else if (isYesterday(date)) {
+  } else if (isYesterday(date) && !sideDate) {
     return format(date, "'Yesterday'");
   } else {
-    return format(date, "dd.LL.yyyy");
+    return format(date, "dd.LL.");
   }
 };
 
