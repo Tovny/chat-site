@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import firebase from "firebase/app";
 import "firebase/auth";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import setUser from "./redux/actions/user-actions";
 
 import {
@@ -24,7 +24,6 @@ import { CssBaseline, Grid } from "@material-ui/core";
 
 function App() {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
 
   useObservable(login$, setUser);
 
@@ -59,8 +58,6 @@ function App() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {}, []);
 
   return (
     <>
