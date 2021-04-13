@@ -29,6 +29,10 @@ export const userLeave$ = createObservable("userLeft");
 
 export const login$ = createObservable("login");
 
+export const registrationError$ = createObservable("registrationError");
+
+export const registrationSuccess$ = createObservable("registrationSuccess");
+
 // ACTIONS
 
 export const getMessages = (user, room) => {
@@ -55,8 +59,8 @@ export const sendRoomChange = (oldRoom, newRoom) => {
   socket$.next({ type: "roomChange", oldRoom, newRoom });
 };
 
-export const createEmailUser = (user, payload) => {
-  socket$.next({ type: "newEmailUser", payload, user });
+export const createEmailUser = (payload) => {
+  socket$.next({ type: "newEmailUser", payload });
 };
 
 // CUSTOM HOOKS

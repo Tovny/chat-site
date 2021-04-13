@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import firebase from "firebase";
 
-import { createEmailUser } from "../../websocket";
+import {
+  registrationError$,
+  registrationSuccess$,
+  createEmailUser,
+} from "../../websocket";
 
+import Alert from "@material-ui/lab/Alert";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Link from "@material-ui/core/Link";
@@ -32,24 +37,41 @@ const useStyles = makeStyles((theme) => ({
 export default function SignUp({ setActivePage }) {
   const classes = useStyles();
 
-  const [username, setUsername] = useState("");
-  const [avatar, setAvatar] = useState(null);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const usernameRef = useRef(null);
+  const avatarRef = useRef(null);
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    registrationError$.subscribe((err) => {
+      setError(err);
+      setLoading(false);
+    });
+
+    registrationSuccess$.subscribe((token) => {
+      firebase.auth().signInWithCustomToken(token);
+    });
+
+    return () => {
+      registrationError$.unsubscribe();
+      registrationSuccess$.unsubscribe();
+    };
+  }, []);
 
   const handleSubmit = (e) => {
+    setLoading(true);
+
     e.preventDefault();
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then((newUser) => {
-        const uid = newUser.user.uid;
-        createEmailUser(uid, {
-          username,
-          uid,
-          avatar,
-        });
-      });
+
+    createEmailUser({
+      username: usernameRef.current.value,
+      avatar: avatarRef.current.value,
+      email: emailRef.current.value,
+      password: passwordRef.current.value,
+    });
   };
 
   return (
@@ -60,7 +82,12 @@ export default function SignUp({ setActivePage }) {
         </Typography>
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            {error && (
+              <Grid item xs={12}>
+                <Alert severity="error">{error.message}</Alert>
+              </Grid>
+            )}
+            <Grid item xs={6}>
               <TextField
                 autoComplete="uname"
                 name="usertName"
@@ -70,11 +97,10 @@ export default function SignUp({ setActivePage }) {
                 id="userName"
                 label="User Name"
                 autoFocus
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                inputRef={usernameRef}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={6}>
               <TextField
                 autoComplete="avatar"
                 name="avatar"
@@ -84,8 +110,7 @@ export default function SignUp({ setActivePage }) {
                 id="avatar"
                 label="Avatar"
                 autoFocus
-                value={avatar}
-                onChange={(e) => setAvatar(e.target.value)}
+                inputRef={avatarRef}
               />
             </Grid>
             <Grid item xs={12}>
@@ -97,8 +122,7 @@ export default function SignUp({ setActivePage }) {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                inputRef={emailRef}
               />
             </Grid>
             <Grid item xs={12}>
@@ -111,8 +135,7 @@ export default function SignUp({ setActivePage }) {
                 type="password"
                 id="password"
                 autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                inputRef={passwordRef}
               />
             </Grid>
           </Grid>
@@ -122,6 +145,7 @@ export default function SignUp({ setActivePage }) {
             variant="contained"
             color="primary"
             className={classes.submit}
+            disabled={loading}
           >
             Sign Up
           </Button>

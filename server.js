@@ -160,11 +160,53 @@ const wss = new WebSocket.Server({ port: 5000 });
       }
 
       if (type === "newEmailUser") {
-        let doc = await firestore
-          .collection("users")
-          .doc(user)
-          .set(payload, { merge: true });
-        ws.send(JSON.stringify({ payload: doc, type: "login" }));
+        const users = await firestore.collection("users").get();
+        const usernames = new Array();
+
+        users.forEach((user) => {
+          const data = user.data();
+          usernames.push(data.username);
+        });
+
+        if (usernames.includes(payload.username)) {
+          ws.send(
+            JSON.stringify({
+              type: "registrationError",
+              payload: { type: Error, message: "Username taken" },
+            })
+          );
+        } else {
+          try {
+            const res = await admin.auth().createUser({
+              email: payload.email,
+              password: payload.password,
+              displayName: payload.username,
+            });
+
+            await firestore.collection("users").doc(res.uid).set(
+              {
+                username: payload.username,
+                avatar: payload.avatar,
+                uid: res.uid,
+                rooms: [],
+              },
+              { merge: true }
+            );
+
+            const token = await admin.auth().createCustomToken(res.uid);
+
+            ws.send(
+              JSON.stringify({
+                payload: token,
+                type: "registrationSuccess",
+              })
+            );
+          } catch (err) {
+            ws.send(
+              JSON.stringify({ type: "registrationError", payload: err })
+            );
+          }
+        }
       }
 
       if (type === "login") {
