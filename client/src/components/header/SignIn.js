@@ -1,5 +1,8 @@
+import { useState, useRef } from "react";
+
 import firebase from "firebase/app";
 
+import Alert from "@material-ui/lab/Alert";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
@@ -8,6 +11,8 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+
+import Google from "../../assets/Google.png";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -28,10 +33,33 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  google: {
+    height: "1.5rem",
+    position: "absolute",
+    left: "0.5rem",
+  },
 }));
 
 export default function SignIn({ setActivePage }) {
   const classes = useStyles();
+
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      await firebase
+        .auth()
+        .signInWithEmailAndPassword(
+          emailRef.current.value,
+          passwordRef.current.value
+        );
+    } catch (err) {
+      setError(err);
+    }
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -40,8 +68,8 @@ export default function SignIn({ setActivePage }) {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-
-        <form className={classes.form} noValidate>
+        {error && <Alert severity="error">{error.message}</Alert>}
+        <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -52,6 +80,7 @@ export default function SignIn({ setActivePage }) {
             name="email"
             autoComplete="email"
             autoFocus
+            inputRef={emailRef}
           />
           <TextField
             variant="outlined"
@@ -63,6 +92,7 @@ export default function SignIn({ setActivePage }) {
             type="password"
             id="password"
             autoComplete="current-password"
+            inputRef={passwordRef}
           />
           <Grid container>
             <Grid item xs>
@@ -98,6 +128,7 @@ export default function SignIn({ setActivePage }) {
             firebase.auth().signInWithPopup(googleAuthProvider);
           }}
         >
+          <img src={Google} alt="Google Icon" className={classes.google}></img>
           Sign In with Google
         </Button>
       </div>
