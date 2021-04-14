@@ -252,13 +252,40 @@ const wss = new WebSocket.Server({ port: 5000 });
         });
       }
 
+      const getRooms = async () => {
+        const collections = await firestore.listCollections();
+
+        const rooms = collections.map((collection) =>
+          collection["_queryOptions"]["collectionId"].toUpperCase()
+        );
+
+        return rooms;
+      };
+
+      const addUserToRoom = async () => {
+        const doc = await firestore.collection("users").doc(user.uid).get();
+
+        const dbUser = doc.data();
+
+        dbUser.rooms.push(newRoom);
+
+        await firestore
+          .collection("users")
+          .doc(user.uid)
+          .set({ rooms: dbUser.rooms }, { merge: true });
+
+        const updatedUser = await firestore
+          .collection("users")
+          .doc(user.uid)
+          .get();
+        const updatedUserData = updatedUser.data();
+
+        ws.send(JSON.stringify({ payload: updatedUserData, type: "login" }));
+      };
+
       if (type === "createRoom") {
         try {
-          const collections = await firestore.listCollections();
-
-          const rooms = collections.map((collection) =>
-            collection["_queryOptions"]["collectionId"].toUpperCase()
-          );
+          const rooms = await getRooms();
 
           if (!rooms.includes(newRoom.toUpperCase())) {
             const newPost = {
@@ -271,24 +298,7 @@ const wss = new WebSocket.Server({ port: 5000 });
 
             await firestore.collection(newRoom).add(newPost);
 
-            const doc = await firestore.collection("users").doc(user.uid).get();
-
-            const dbUser = doc.data();
-
-            dbUser.rooms.push(newRoom);
-
-            await firestore
-              .collection("users")
-              .doc(user.uid)
-              .set({ rooms: dbUser.rooms }, { merge: true });
-
-            const newo = await firestore
-              .collection("users")
-              .doc(user.uid)
-              .get();
-            const doco = newo.data();
-
-            ws.send(JSON.stringify({ payload: doco, type: "login" }));
+            await addUserToRoom();
           } else {
             ws.send(
               JSON.stringify({
@@ -298,9 +308,35 @@ const wss = new WebSocket.Server({ port: 5000 });
             );
           }
         } catch (err) {
+          console.log(err);
           ws.send(
             JSON.stringify({
               type: "createRoomError",
+              payload: err,
+            })
+          );
+        }
+      }
+
+      if (type === "joinRoom") {
+        try {
+          const rooms = await getRooms();
+
+          if (rooms.includes(newRoom.toUpperCase())) {
+            await addUserToRoom();
+          } else {
+            ws.send(
+              JSON.stringify({
+                type: "joinRoomError",
+                payload: { type: Error, message: "Room does not exist." },
+              })
+            );
+          }
+        } catch (err) {
+          console.log(err);
+          ws.send(
+            JSON.stringify({
+              type: "joinRoomError",
               payload: err,
             })
           );

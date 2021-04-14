@@ -35,6 +35,8 @@ export const registrationSuccess$ = createObservable("registrationSuccess");
 
 export const createRoomError$ = createObservable("createRoomError");
 
+export const joinRoomError$ = createObservable("joinRoomError");
+
 // ACTIONS
 
 export const getMessages = (user, room) => {
@@ -67,6 +69,10 @@ export const createEmailUser = (payload) => {
 
 export const createNewRoom = (newRoom, user) => {
   socket$.next({ type: "createRoom", newRoom, user });
+};
+
+export const joinNewRoom = (newRoom, user) => {
+  socket$.next({ type: "joinRoom", newRoom, user });
 };
 
 // CUSTOM HOOKS
