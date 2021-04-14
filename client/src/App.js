@@ -40,6 +40,7 @@ function App() {
           avatar: null,
         };
         dispatch(setUser(randomUser));
+        dispatch(setRoom("Global Chat"));
       }
     });
 

@@ -1,4 +1,4 @@
-const roomReducer = (state = "global-messages", action) => {
+const roomReducer = (state = "Global Chat", action) => {
   switch (action.type) {
     case "SET_ROOM": {
       if (action.payload) {
