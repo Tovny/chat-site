@@ -5,6 +5,7 @@ import "firebase/auth";
 
 import { useDispatch } from "react-redux";
 import setUser from "./redux/actions/user-actions";
+import setRoom from "./redux/actions/room-actions";
 
 import {
   useObservable,
@@ -18,7 +19,7 @@ import {
 
 import ChatWindow from "./components/chat-window/Chat-window";
 import Header from "./components/header/Header";
-import Rooms from "./components/Rooms";
+import Rooms from "./components/rooms/Rooms";
 
 import { CssBaseline, Grid } from "@material-ui/core";
 
@@ -43,8 +44,17 @@ function App() {
     });
 
     userSubject$.subscribe(([oldUser, newUser]) => {
-      sendUserChange(oldUser, newUser);
-      dispatch(setUser(newUser));
+      if (
+        oldUser.username !== newUser.username ||
+        oldUser.uid !== newUser.uid
+      ) {
+        sendUserChange(oldUser, newUser);
+        dispatch(setUser(newUser));
+      }
+      if (newUser.rooms && oldUser.rooms !== newUser.rooms) {
+        const newRoom = newUser.rooms[newUser.rooms.length - 1];
+        dispatch(setRoom(newRoom)); //naj da noveega usera v global
+      }
     });
 
     roomSubject$.subscribe(([oldRoom, newRoom]) => {
