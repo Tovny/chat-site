@@ -5,6 +5,7 @@ import firebase from "firebase";
 import {
   registrationError$,
   registrationSuccess$,
+  useObservableLocal,
   createEmailUser,
 } from "../../websocket";
 
@@ -45,24 +46,25 @@ export default function SignUp({ setActivePage }) {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    registrationError$.subscribe((err) => {
-      setError(err);
-      setLoading(false);
-    });
+  useObservableLocal(registrationError$, setError);
 
+  useEffect(() => {
     registrationSuccess$.subscribe((token) => {
       firebase.auth().signInWithCustomToken(token);
     });
 
     return () => {
-      registrationError$.unsubscribe();
       registrationSuccess$.unsubscribe();
     };
   }, []);
 
+  useEffect(() => {
+    setLoading(false);
+  }, [error]);
+
   const handleSubmit = (e) => {
     setLoading(true);
+    setError(null);
 
     e.preventDefault();
 
