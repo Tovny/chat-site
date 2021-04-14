@@ -33,6 +33,8 @@ export const registrationError$ = createObservable("registrationError");
 
 export const registrationSuccess$ = createObservable("registrationSuccess");
 
+export const createRoomError$ = createObservable("createRoomError");
+
 // ACTIONS
 
 export const getMessages = (user, room) => {
@@ -75,6 +77,20 @@ export const useObservable = (observable, setter) => {
   useEffect(() => {
     observable.subscribe((msg) => {
       dispatch(setter(msg));
+    });
+
+    return () => {
+      observable.unsubscribe();
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [observable]);
+};
+
+export const useObservableLocal = (observable, setter) => {
+  useEffect(() => {
+    observable.subscribe((msg) => {
+      setter(msg);
     });
 
     return () => {
