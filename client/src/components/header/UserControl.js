@@ -63,13 +63,30 @@ const UserControl = () => {
         </IfFirebaseAuthed>
       )}
       <IfFirebaseUnAuthed>
-        <Button
-          onClick={() => setMenuOpen(true)}
-          color="inherit"
-          ref={buttonRef}
-        >
-          Sign In
-        </Button>
+        {user ? (
+          <Tooltip
+            title={`You can chat as ${user.username}`}
+            arrow
+            placement="left"
+            TransitionComponent={Zoom}
+          >
+            <Button
+              onClick={() => setMenuOpen(true)}
+              color="inherit"
+              ref={buttonRef}
+            >
+              Sign In
+            </Button>
+          </Tooltip>
+        ) : (
+          <Button
+            onClick={() => setMenuOpen(true)}
+            color="inherit"
+            ref={buttonRef}
+          >
+            Sign In
+          </Button>
+        )}
       </IfFirebaseUnAuthed>
       <Menu
         anchorEl={buttonRef.current}
