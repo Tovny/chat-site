@@ -50,6 +50,7 @@ export default function SignIn({ setActivePage }) {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
+      setError(null);
       await firebase
         .auth()
         .signInWithEmailAndPassword(
