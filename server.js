@@ -253,32 +253,58 @@ const wss = new WebSocket.Server({ port: 5000 });
       }
 
       if (type === "createRoom") {
-        // const rooms = await firestore.listCollections();
+        try {
+          const collections = await firestore.listCollections();
 
-        //if (!rooms.includes(newRoom)) {
-        /*   const newPost = {
-          user: "whater",
-          msg: "Prvi post!",
-          time: admin.firestore.Timestamp.now(),
-        };
-        await firestore.collection(newRoom).add(newPost);*/
+          const rooms = collections.map((collection) =>
+            collection["_queryOptions"]["collectionId"].toUpperCase()
+          );
 
-        const doc = await firestore.collection("users").doc(user.uid).get();
+          if (!rooms.includes(newRoom.toUpperCase())) {
+            const newPost = {
+              username: "Chat Bot",
+              msg: `${user.username} created ${newRoom}`,
+              time: admin.firestore.Timestamp.now(),
+              avatar:
+                "https://cdn.iconscout.com/icon/premium/png-256-thumb/system-1750733-1488785.png",
+            };
 
-        const dbUser = doc.data();
+            await firestore.collection(newRoom).add(newPost);
 
-        dbUser.rooms.push(newRoom);
+            const doc = await firestore.collection("users").doc(user.uid).get();
 
-        await firestore
-          .collection("users")
-          .doc(user.uid)
-          .set({ rooms: dbUser.rooms }, { merge: true });
+            const dbUser = doc.data();
 
-        const newo = await firestore.collection("users").doc(user.uid).get();
-        const doco = newo.data();
+            dbUser.rooms.push(newRoom);
 
-        ws.send(JSON.stringify({ payload: doco, type: "login" }));
-        //  }
+            await firestore
+              .collection("users")
+              .doc(user.uid)
+              .set({ rooms: dbUser.rooms }, { merge: true });
+
+            const newo = await firestore
+              .collection("users")
+              .doc(user.uid)
+              .get();
+            const doco = newo.data();
+
+            ws.send(JSON.stringify({ payload: doco, type: "login" }));
+          } else {
+            ws.send(
+              JSON.stringify({
+                type: "createRoomError",
+                payload: { type: Error, message: "Room already exists." },
+              })
+            );
+          }
+        } catch (err) {
+          ws.send(
+            JSON.stringify({
+              type: "createRoomError",
+              payload: err,
+            })
+          );
+        }
       }
     });
 
