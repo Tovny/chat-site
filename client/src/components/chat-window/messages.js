@@ -67,6 +67,8 @@ const Messages = ({ messages, sendMessage, user, room, classes }) => {
             variant="contained"
             color="primary"
             size="small"
+            value={message}
+            disabled={!message}
           >
             Send
           </Button>
