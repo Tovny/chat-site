@@ -44,18 +44,17 @@ const Rooms = () => {
       <Button
         fullWidth
         variant="contained"
-        color="secondary"
+        color={room === "Global Chat" ? "secondary" : "primary"}
         size="large"
-        disabled={room === "Global Chat"}
         onClick={() => {
-          dispatch(setRoom("Global Chat"));
+          if (room !== "Global Chat") dispatch(setRoom("Global Chat"));
         }}
       >
         Global Chat
       </Button>
       <IfFirebaseAuthed>
         <Typography
-          variant="h5"
+          variant="h6"
           align="center"
           className={classes.subbedHeading}
         >
@@ -69,12 +68,13 @@ const Rooms = () => {
                 return (
                   <Button
                     size="small"
-                    color="primary"
-                    disabled={room === subbedRoom}
+                    variant={room === subbedRoom ? "contained" : "text"}
+                    color={room === subbedRoom ? "secondary" : "default"}
+                    disableElevation
                     key={subbedRoom}
                     className={classes.roomButton}
                     onClick={() => {
-                      dispatch(setRoom(subbedRoom));
+                      if (room !== subbedRoom) dispatch(setRoom(subbedRoom));
                     }}
                   >
                     {subbedRoom}
