@@ -42,7 +42,9 @@ const CreateRoom = ({ setActiveMenu }) => {
   useEffect(() => {
     createRoomError$.subscribe((err) => setError(err));
 
-    return () => createRoomError$.unsubscribe();
+    return () => {
+      createRoomError$.unsubscribe();
+    };
   }, []);
 
   return (
