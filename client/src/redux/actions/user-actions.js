@@ -1,8 +1,13 @@
-const setUser = (payload) => {
+export const setUser = (payload) => {
   return {
     type: "SET_USER",
     payload,
   };
 };
 
-export default setUser;
+export const setUserRooms = (payload) => {
+  return {
+    type: "SET_USER_ROOMS",
+    payload,
+  };
+};
