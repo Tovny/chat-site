@@ -1,6 +1,32 @@
 import { makeStyles } from "@material-ui/core/styles";
 
 const roomStyles = makeStyles((theme) => ({
+  roomsContainer: {
+    padding: 0,
+    marginTop: 10,
+    paddingRight: "0.5rem",
+    height: "calc(100vh - 5rem)",
+  },
+  subbedHeading: {
+    margin: "10px 0",
+  },
+  subbedRooms: {
+    height: "calc(85% - 10px)",
+    marginBottom: "10px",
+    overflow: "auto",
+    "&::-webkit-scrollbar-track": {
+      backgroundColor: "rgba(0,0,0,.1)",
+    },
+    "&::-webkit-scrollbar-thumb": {
+      backgroundColor: "rgba(0,0,0,.2)",
+    },
+    "&::-webkit-scrollbar": {
+      width: "7px",
+    },
+  },
+  roomButton: {
+    padding: "1rem 0",
+  },
   paper: {
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),

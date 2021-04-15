@@ -21,10 +21,12 @@ import ChatWindow from "./components/chat-window/Chat-window";
 import Header from "./components/header/Header";
 import Rooms from "./components/rooms/Rooms";
 
-import { CssBaseline, Grid } from "@material-ui/core";
+import { CssBaseline, Container, Grid, Hidden } from "@material-ui/core";
+import appStyles from "./AppStyles";
 
 function App() {
   const dispatch = useDispatch();
+  const classes = appStyles();
 
   useObservable(login$, setUserRooms);
 
@@ -78,14 +80,18 @@ function App() {
       <CssBaseline />
       <div className="App">
         <Header />
-        <Grid container direction="row" justify="center">
-          <Grid item xs={2}>
-            <Rooms />
+        <Container maxWidth="xl" className={classes.appContainer}>
+          <Grid container direction="row" alignItems="center">
+            <Hidden smDown>
+              <Grid item md={3}>
+                <Rooms />
+              </Grid>
+            </Hidden>
+            <Grid item xs={12} md={9}>
+              <ChatWindow />
+            </Grid>
           </Grid>
-          <Grid item xs={10}>
-            <ChatWindow />
-          </Grid>
-        </Grid>
+        </Container>
       </div>
     </>
   );
