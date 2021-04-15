@@ -5,9 +5,9 @@ const useMessageStyles = makeStyles({
     margin: 0,
     padding: 0,
   },
-  messageWindow: { margin: "0 0.5rem" },
+  messageWindow: {},
   messagesContainer: {
-    height: "calc(100vh - 8.5rem)",
+    height: "calc(100vh - 8.75rem)",
     overflow: "auto",
     "&::-webkit-scrollbar-track": {
       backgroundColor: "rgba(0,0,0,.1)",
@@ -40,7 +40,6 @@ const useMessageStyles = makeStyles({
     alignItems: "center",
     padding: "5px 10px",
   },
-
   visiblePostTime: {
     opacity: 1,
     alignSelf: "center",
@@ -58,11 +57,25 @@ const useMessageStyles = makeStyles({
     marginTop: "1rem",
   },
   activeUsers: {
-    height: "calc(100vh - 4rem)",
+    height: "calc(100vh - 8rem)",
     padding: "0 .5rem",
+    overflow: "auto",
+    "&::-webkit-scrollbar-track": {
+      backgroundColor: "rgba(0,0,0,.1)",
+    },
+    "&::-webkit-scrollbar-thumb": {
+      backgroundColor: "rgba(0,0,0,.2)",
+    },
+    "&::-webkit-scrollbar": {
+      width: "7px",
+    },
+  },
+  activesHeading: {
+    margin: "10px 0",
   },
   activeUserContainer: {
-    margin: "0.75rem",
+    paddingLeft: "0.5rem",
+    paddingTop: "0.5rem",
   },
   activeUserAvatar: {
     marginRight: "0.5rem",
