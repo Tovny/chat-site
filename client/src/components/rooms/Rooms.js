@@ -96,7 +96,6 @@ const Rooms = () => {
         <Menu
           anchorEl={buttonGroupRef.current}
           onClose={() => setMenuOpen(false)}
-          keepMounted
           open={menuOpen}
         >
           {activeMenu === "createRoom" && (
