@@ -192,13 +192,11 @@ const wss = new WebSocket.Server({ port: 5000 });
                   email: payload.email,
                   password: payload.password,
                   displayName: payload.username,
+                  photoURL: payload.avatar,
                 });
 
                 await firestore.collection("users").doc(res.uid).set(
                   {
-                    username: payload.username,
-                    avatar: payload.avatar,
-                    uid: res.uid,
                     rooms: [],
                   },
                   { merge: true }
@@ -228,9 +226,6 @@ const wss = new WebSocket.Server({ port: 5000 });
 
           if (!doc) {
             const newUser = {
-              username: user.displayName,
-              avatar: user.photoURL,
-              uid: user.uid,
               rooms: [],
             };
 
@@ -285,7 +280,10 @@ const wss = new WebSocket.Server({ port: 5000 });
             subscribedRooms.push(room.toUpperCase())
           );
 
-          if (!subscribedRooms.includes(addRoom.toUpperCase())) {
+          if (
+            !subscribedRooms.includes(addRoom.toUpperCase()) &&
+            addRoom.toUpperCase() !== "GLOBAL CHAT"
+          ) {
             dbUser.rooms.push(addRoom);
 
             await firestore

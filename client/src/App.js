@@ -4,7 +4,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 
 import { useDispatch } from "react-redux";
-import setUser from "./redux/actions/user-actions";
+import { setUser, setUserRooms } from "./redux/actions/user-actions";
 import setRoom from "./redux/actions/room-actions";
 
 import {
@@ -26,12 +26,19 @@ import { CssBaseline, Grid } from "@material-ui/core";
 function App() {
   const dispatch = useDispatch();
 
-  useObservable(login$, setUser);
+  useObservable(login$, setUserRooms);
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        sendLogin(user.uid, user);
+        const signedUser = {
+          username: user.displayName,
+          uid: user.uid,
+          avatar: user.photoURL,
+        };
+        dispatch(setUser(signedUser));
+
+        sendLogin(user.uid, signedUser);
       } else {
         const randomUsername = `User.${Math.ceil(Math.random() * 10000)}`;
         const randomUser = {
