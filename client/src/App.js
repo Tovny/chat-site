@@ -52,10 +52,6 @@ function App() {
         sendUserChange(oldUser, newUser);
         dispatch(setUser(newUser));
       }
-      if (newUser.rooms && oldUser.rooms !== newUser.rooms) {
-        const newRoom = newUser.rooms[newUser.rooms.length - 1];
-        dispatch(setRoom(newRoom)); //naj da noveega usera v global
-      }
     });
 
     roomSubject$.subscribe(([oldRoom, newRoom]) => {
