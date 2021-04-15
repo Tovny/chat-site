@@ -129,8 +129,12 @@ export default function SignIn({ setActivePage }) {
           variant="contained"
           fullWidth
           onClick={async () => {
-            const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
-            firebase.auth().signInWithPopup(googleAuthProvider);
+            try {
+              const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+              await firebase.auth().signInWithPopup(googleAuthProvider);
+            } catch (err) {
+              setError(err);
+            }
           }}
         >
           <img src={Google} alt="Google Icon" className={classes.google}></img>
