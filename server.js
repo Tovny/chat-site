@@ -279,20 +279,36 @@ const wss = new WebSocket.Server({ port: 5000 });
 
           const dbUser = doc.data();
 
-          dbUser.rooms.push(addRoom);
+          const subscribedRooms = new Array();
 
-          await firestore
-            .collection("users")
-            .doc(user.uid)
-            .set({ rooms: dbUser.rooms }, { merge: true });
+          dbUser.rooms.forEach((room) =>
+            subscribedRooms.push(room.toUpperCase())
+          );
 
-          const updatedUser = await firestore
-            .collection("users")
-            .doc(user.uid)
-            .get();
-          const updatedUserData = updatedUser.data();
+          if (!subscribedRooms.includes(addRoom.toUpperCase())) {
+            dbUser.rooms.push(addRoom);
 
-          ws.send(JSON.stringify({ payload: updatedUserData, type: "login" }));
+            await firestore
+              .collection("users")
+              .doc(user.uid)
+              .set({ rooms: dbUser.rooms }, { merge: true });
+
+            const updatedUser = await firestore
+              .collection("users")
+              .doc(user.uid)
+              .get();
+            const updatedUserData = updatedUser.data();
+
+            ws.send(
+              JSON.stringify({ payload: updatedUserData, type: "login" })
+            );
+
+            ws.send(
+              JSON.stringify({ type: "newRoomSucces", payload: addRoom })
+            );
+          } else {
+            throw new Error("Already subscribed");
+          }
         };
 
         if (type === "createRoom") {
@@ -344,7 +360,16 @@ const wss = new WebSocket.Server({ port: 5000 });
             }
 
             if (foundRoom) {
-              await addUserToRoom(foundRoom);
+              try {
+                await addUserToRoom(foundRoom);
+              } catch (err) {
+                ws.send(
+                  JSON.stringify({
+                    type: "joinRoomError",
+                    payload: { type: Error, message: "Already subscribed." },
+                  })
+                );
+              }
             } else {
               ws.send(
                 JSON.stringify({
