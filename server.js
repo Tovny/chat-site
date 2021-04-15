@@ -171,15 +171,14 @@ const wss = new WebSocket.Server({ port: 5000 });
               })
             );
           } else {
-            const users = await firestore.collection("users").get();
+            const { users } = await admin.auth().listUsers();
             const usernames = new Array();
 
             users.forEach((user) => {
-              const data = user.data();
-              usernames.push(data.username);
+              usernames.push(user.displayName.toUpperCase());
             });
 
-            if (usernames.includes(payload.username)) {
+            if (usernames.includes(payload.username.toUpperCase())) {
               ws.send(
                 JSON.stringify({
                   type: "registrationError",
