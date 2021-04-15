@@ -33,6 +33,10 @@ const Rooms = () => {
     setMenuOpen(false);
   }, [room]);
 
+  useEffect(() => {
+    roomSubject$.next(room);
+  }, [room]);
+
   return (
     <Container style={{ justifySelf: "right", padding: "1rem 1rem" }}>
       <Button
@@ -41,7 +45,6 @@ const Rooms = () => {
         color="secondary"
         disabled={room === "Global Chat"}
         onClick={() => {
-          roomSubject$.next("Global Chat");
           dispatch(setRoom("Global Chat"));
         }}
       >
@@ -64,7 +67,6 @@ const Rooms = () => {
                     disabled={room === subbedRoom}
                     key={subbedRoom}
                     onClick={() => {
-                      roomSubject$.next(subbedRoom);
                       dispatch(setRoom(subbedRoom));
                     }}
                   >
