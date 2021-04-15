@@ -16,11 +16,14 @@ import {
   Typography,
 } from "@material-ui/core";
 
+import roomStyles from "./RoomStyles";
+
 import CreateRoom from "./Create-room";
 import JoinRoom from "./Join-room";
 
 const Rooms = () => {
   const dispatch = useDispatch();
+  const classes = roomStyles();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState("createRoom");
@@ -37,11 +40,12 @@ const Rooms = () => {
   }, [room]);
 
   return (
-    <Container style={{ justifySelf: "right", padding: "1rem 1rem" }}>
+    <Container className={classes.roomsContainer}>
       <Button
         fullWidth
         variant="contained"
         color="secondary"
+        size="large"
         disabled={room === "Global Chat"}
         onClick={() => {
           dispatch(setRoom("Global Chat"));
@@ -50,21 +54,25 @@ const Rooms = () => {
         Global Chat
       </Button>
       <IfFirebaseAuthed>
-        <Paper
-          variant="outlined"
-          style={{ height: "calc(100vh - 15rem)", overflowY: "auto" }}
+        <Typography
+          variant="h5"
+          align="center"
+          className={classes.subbedHeading}
         >
-          <Typography variant="body1">Subscribed Rooms</Typography>
-          <ButtonGroup orientation="vertical" fullWidth>
+          Subscribed Rooms
+        </Typography>
+        <Paper variant="outlined" className={classes.subbedRooms}>
+          <ButtonGroup orientation="vertical" variant="text" fullWidth>
             {user &&
               user.rooms &&
               user.rooms.map((subbedRoom) => {
                 return (
                   <Button
-                    variant="contained"
+                    size="small"
                     color="primary"
                     disabled={room === subbedRoom}
                     key={subbedRoom}
+                    className={classes.roomButton}
                     onClick={() => {
                       dispatch(setRoom(subbedRoom));
                     }}
@@ -77,6 +85,8 @@ const Rooms = () => {
         </Paper>
         <ButtonGroup fullWidth ref={buttonGroupRef}>
           <Button
+            variant="contained"
+            color="primary"
             onClick={() => {
               setMenuOpen(true);
               setActiveMenu("joinRoom");
@@ -85,12 +95,14 @@ const Rooms = () => {
             Join Room
           </Button>
           <Button
+            variant="contained"
+            color="primary"
             onClick={() => {
               setMenuOpen(true);
               setActiveMenu("createRoom");
             }}
           >
-            Create New Room
+            Create Room
           </Button>
         </ButtonGroup>
         <Menu
