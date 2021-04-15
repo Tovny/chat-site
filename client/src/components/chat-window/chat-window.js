@@ -26,7 +26,7 @@ import {
 import Messages from "./Messages";
 import ActiveUsers from "./Active-users";
 
-import { Container, Grid, Paper } from "@material-ui/core";
+import { Grid, Paper, Hidden, Typography } from "@material-ui/core";
 import useMessageStyles from "./Chat-window-styles";
 
 const ChatWindow = () => {
@@ -78,22 +78,31 @@ const ChatWindow = () => {
   }, [user]);
 
   return (
-    <Container maxWidth="xl" className={classes.chatWindow}>
-      <Grid container>
-        <Grid item xs={8} className={classes.messageWindow}>
-          <Messages
-            messages={messages}
-            sendMessage={sendMessage}
-            user={user}
-            room={room}
-            classes={classes}
-          />
-        </Grid>
-        <Paper xs={4} variant="outlined" square className={classes.activeUsers}>
-          <ActiveUsers activeUsers={activeUsers} classes={classes} />
-        </Paper>
+    <Grid container className={classes.chatWindow}>
+      <Grid item xs={12} sm={9} className={classes.messageWindow}>
+        <Messages
+          messages={messages}
+          sendMessage={sendMessage}
+          user={user}
+          room={room}
+          classes={classes}
+        />
       </Grid>
-    </Container>
+      <Hidden xsDown>
+        <Grid item sm={3} className={classes.activeUserContainer}>
+          <Typography
+            variant="h5"
+            align="center"
+            className={classes.activesHeading}
+          >
+            Active Users
+          </Typography>
+          <Paper variant="outlined" square className={classes.activeUsers}>
+            <ActiveUsers activeUsers={activeUsers} classes={classes} />
+          </Paper>
+        </Grid>
+      </Hidden>
+    </Grid>
   );
 };
 
