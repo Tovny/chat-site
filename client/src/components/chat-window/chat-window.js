@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
-import setUser from "../../redux/actions/user-actions";
+import { setUser } from "../../redux/actions/user-actions";
 import {
   setMessages,
   resetMessages,
