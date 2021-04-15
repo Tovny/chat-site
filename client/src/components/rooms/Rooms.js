@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import setRoom from "../../redux/actions/room-actions";
 
-import { roomSubject$ } from "../../websocket";
+import { roomSubject$, newRoomSuccess$, useObservable } from "../../websocket";
 
 import { IfFirebaseAuthed } from "@react-firebase/auth";
 
@@ -29,11 +29,10 @@ const Rooms = () => {
 
   const buttonGroupRef = useRef(null);
 
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [room]);
+  useObservable(newRoomSuccess$, setRoom);
 
   useEffect(() => {
+    setMenuOpen(false);
     roomSubject$.next(room);
   }, [room]);
 

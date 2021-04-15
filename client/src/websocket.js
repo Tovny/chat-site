@@ -37,6 +37,8 @@ export const createRoomError$ = createObservable("createRoomError");
 
 export const joinRoomError$ = createObservable("joinRoomError");
 
+export const newRoomSuccess$ = createObservable("newRoomSucces");
+
 // ACTIONS
 
 export const getMessages = (user, room) => {

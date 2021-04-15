@@ -1,12 +1,8 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import { useSelector } from "react-redux";
 
-import {
-  createRoomError$,
-  useObservableLocal,
-  createNewRoom,
-} from "../../websocket";
+import { createRoomError$, createNewRoom } from "../../websocket";
 
 import {
   Container,
@@ -23,21 +19,31 @@ const CreateRoom = ({ setActiveMenu }) => {
   const classes = roomStyles();
 
   const [error, setError] = useState(null);
+  const [disabled, setDisabled] = useState(false);
   const user = useSelector((state) => state.user);
 
   const newRoomRef = useRef(null);
 
-  useObservableLocal(createRoomError$, setError);
-
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
+      setDisabled(true);
       setError(null);
       createNewRoom(newRoomRef.current.value, user);
     } catch (err) {
       setError(err);
     }
   };
+
+  useEffect(() => {
+    setDisabled(false);
+  }, [error]);
+
+  useEffect(() => {
+    createRoomError$.subscribe((err) => setError(err));
+
+    return () => createRoomError$.unsubscribe();
+  }, []);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -70,6 +76,7 @@ const CreateRoom = ({ setActiveMenu }) => {
             fullWidth
             variant="contained"
             color="primary"
+            disabled={disabled}
             className={classes.submit}
           >
             Create new Room

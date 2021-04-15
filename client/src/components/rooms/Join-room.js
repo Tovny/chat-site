@@ -1,12 +1,8 @@
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { useSelector } from "react-redux";
 
-import {
-  joinRoomError$,
-  useObservableLocal,
-  joinNewRoom,
-} from "../../websocket";
+import { joinRoomError$, joinNewRoom } from "../../websocket";
 
 import {
   Container,
@@ -23,21 +19,31 @@ const JoinRoom = ({ setActiveMenu }) => {
   const classes = roomStyles();
 
   const [error, setError] = useState(null);
+  const [disabled, setDisabled] = useState(false);
   const user = useSelector((state) => state.user);
 
   const newRoomRef = useRef(null);
 
-  useObservableLocal(joinRoomError$, setError);
-
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
+      setDisabled(true);
       setError(null);
       joinNewRoom(newRoomRef.current.value, user);
     } catch (err) {
       setError(err);
     }
   };
+
+  useEffect(() => {
+    setDisabled(false);
+  }, [error]);
+
+  useEffect(() => {
+    joinRoomError$.subscribe((err) => setError(err));
+
+    return () => joinRoomError$.unsubscribe();
+  }, []);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -70,6 +76,7 @@ const JoinRoom = ({ setActiveMenu }) => {
             fullWidth
             variant="contained"
             color="primary"
+            disabled={disabled}
             className={classes.submit}
           >
             Join Room
