@@ -89,7 +89,7 @@ const ChatWindow = () => {
         />
       </Grid>
       <Hidden xsDown>
-        <Grid item sm={3} className={classes.activeUserContainer}>
+        <Grid item sm={3} className={classes.activeUsersContainer}>
           <Typography
             variant="h6"
             align="center"
