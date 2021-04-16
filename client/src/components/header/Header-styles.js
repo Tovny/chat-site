@@ -5,6 +5,7 @@ const headerStyles = makeStyles({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
+    height: "4rem",
   },
   userAvatar: {
     marginLeft: "0.75rem",
