@@ -48,7 +48,7 @@ const UserControl = () => {
                 setMenuOpen(false);
                 firebase.auth().signOut();
               }}
-              color="inherit"
+              color="secondary"
               ref={buttonRef}
             >
               <Typography variant="subtitle1">{user.username}</Typography>
@@ -72,7 +72,7 @@ const UserControl = () => {
           >
             <Button
               onClick={() => setMenuOpen(true)}
-              color="inherit"
+              color="secondary"
               ref={buttonRef}
             >
               Sign In
