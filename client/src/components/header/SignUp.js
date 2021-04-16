@@ -111,7 +111,6 @@ export default function SignUp({ setActivePage }) {
                 fullWidth
                 id="avatar"
                 label="Avatar"
-                autoFocus
                 inputRef={avatarRef}
               />
             </Grid>
