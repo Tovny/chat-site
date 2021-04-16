@@ -14,10 +14,6 @@ import {
   Zoom,
 } from "@material-ui/core";
 
-import messageSound from "../../assets/messageSound.mp3";
-
-const messageAlert = new Audio(messageSound);
-
 const Messages = ({ messages, sendMessage, user, room, classes }) => {
   const [message, setMessage] = useState("");
   const containerRef = useRef(null);
@@ -26,7 +22,6 @@ const Messages = ({ messages, sendMessage, user, room, classes }) => {
     const container = containerRef.current;
     if (container.lastChild)
       container.lastChild.scrollIntoView({ behavior: "smooth" });
-    messageAlert.play();
   }, [messages]);
 
   const onSubmit = (e) => {
