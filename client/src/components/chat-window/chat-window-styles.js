@@ -56,8 +56,14 @@ const useMessageStyles = makeStyles({
     gridTemplateColumns: "1fr 150px",
     marginTop: "1rem",
   },
+  activeUsersContainer: {
+    display: "flex",
+    flexFlow: "column",
+    height: "calc(100vh - 4.25rem)",
+    padding: "0 0.5rem",
+  },
   activeUsers: {
-    height: "calc(100vh - 8rem)",
+    flex: "1 1 auto",
     padding: "0 .5rem",
     overflow: "auto",
     "&::-webkit-scrollbar-track": {
