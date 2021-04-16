@@ -2,10 +2,15 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const roomStyles = makeStyles((theme) => ({
   roomsContainer: {
-    padding: 0,
     marginTop: 10,
     padding: "0 0.5rem",
     height: "calc(100vh - 5rem)",
+    display: "flex",
+    flexFlow: "column",
+  },
+  roomsDrawer: {
+    padding: "1rem",
+    height: "100vh",
     display: "flex",
     flexFlow: "column",
   },
