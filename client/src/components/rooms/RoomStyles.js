@@ -4,12 +4,13 @@ const roomStyles = makeStyles((theme) => ({
   roomsContainer: {
     padding: 0,
     marginTop: 10,
-    paddingRight: "0.5rem",
+    padding: "0 0.5rem",
     height: "calc(100vh - 5rem)",
+    display: "flex",
+    flexFlow: "column",
   },
   globalButton: {
     border: "3px solid black",
-    height: "3rem",
     "&:hover": {
       border: "3px solid black",
     },
@@ -18,7 +19,7 @@ const roomStyles = makeStyles((theme) => ({
     margin: "10px 0",
   },
   subbedRooms: {
-    height: "83%",
+    flex: "1 1 auto",
     marginBottom: "10px",
     overflow: "auto",
     "&::-webkit-scrollbar-track": {
