@@ -7,11 +7,18 @@ const roomStyles = makeStyles((theme) => ({
     paddingRight: "0.5rem",
     height: "calc(100vh - 5rem)",
   },
+  globalButton: {
+    border: "3px solid black",
+    height: "3rem",
+    "&:hover": {
+      border: "3px solid black",
+    },
+  },
   subbedHeading: {
     margin: "10px 0",
   },
   subbedRooms: {
-    height: "calc(85% - 10px)",
+    height: "83%",
     marginBottom: "10px",
     overflow: "auto",
     "&::-webkit-scrollbar-track": {
