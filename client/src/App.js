@@ -78,26 +78,24 @@ function App() {
   }, []);
 
   return (
-    <>
-      <ThemeProvider theme={mainTheme}>
-        <CssBaseline />
-        <div className="App">
-          <Header />
-          <Container maxWidth="xl" className={classes.appContainer}>
-            <Grid container direction="row" alignItems="center">
-              <Hidden smDown>
-                <Grid item md={3}>
-                  <Rooms />
-                </Grid>
-              </Hidden>
-              <Grid item xs={12} md={9}>
-                <ChatWindow />
+    <ThemeProvider theme={mainTheme}>
+      <CssBaseline />
+      <div className="App">
+        <Header />
+        <Container maxWidth="xl" className={classes.appContainer}>
+          <Grid container direction="row" alignItems="center">
+            <Hidden smDown>
+              <Grid item md={3}>
+                <Rooms />
               </Grid>
+            </Hidden>
+            <Grid item xs={12} md={9}>
+              <ChatWindow />
             </Grid>
-          </Container>
-        </div>
-      </ThemeProvider>
-    </>
+          </Grid>
+        </Container>
+      </div>
+    </ThemeProvider>
   );
 }
 
