@@ -102,7 +102,7 @@ const Rooms = () => {
               setActiveMenu("createRoom");
             }}
           >
-            Create Room
+            Create New Room
           </Button>
         </ButtonGroup>
         <Menu
