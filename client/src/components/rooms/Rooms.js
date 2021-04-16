@@ -12,7 +12,6 @@ import {
   ButtonGroup,
   Container,
   Menu,
-  Paper,
   Typography,
 } from "@material-ui/core";
 
@@ -43,9 +42,10 @@ const Rooms = () => {
     <Container className={classes.roomsContainer}>
       <Button
         fullWidth
-        variant="contained"
-        color={room === "Global Chat" ? "secondary" : "primary"}
+        variant={room === "Global Chat" ? "contained" : "outlined"}
+        color="primary"
         size="large"
+        className={classes.globalButton}
         onClick={() => {
           if (room !== "Global Chat") dispatch(setRoom("Global Chat"));
         }}
@@ -60,7 +60,7 @@ const Rooms = () => {
         >
           Subscribed Rooms
         </Typography>
-        <Paper variant="outlined" className={classes.subbedRooms}>
+        <div className={classes.subbedRooms}>
           <ButtonGroup orientation="vertical" variant="text" fullWidth>
             {user &&
               user.rooms &&
@@ -69,7 +69,7 @@ const Rooms = () => {
                   <Button
                     size="small"
                     variant={room === subbedRoom ? "contained" : "text"}
-                    color={room === subbedRoom ? "secondary" : "default"}
+                    color="primary"
                     disableElevation
                     key={subbedRoom}
                     className={classes.roomButton}
@@ -82,7 +82,7 @@ const Rooms = () => {
                 );
               })}
           </ButtonGroup>
-        </Paper>
+        </div>
         <ButtonGroup fullWidth ref={buttonGroupRef}>
           <Button
             variant="contained"
