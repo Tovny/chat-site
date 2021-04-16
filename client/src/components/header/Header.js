@@ -11,7 +11,7 @@ const Header = () => {
   const room = useSelector((state) => state.room);
 
   return (
-    <AppBar position="sticky" elevation={false}>
+    <AppBar position="sticky" elevation={0}>
       <Toolbar className={classes.headerToolbar}>
         <Typography variant="h5">{room}</Typography>
         <UserControl />
