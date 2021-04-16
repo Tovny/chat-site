@@ -79,6 +79,8 @@ const useMessageStyles = makeStyles({
   },
   activeUserAvatar: {
     marginRight: "0.5rem",
+    height: "1.75rem",
+    width: "1.75rem",
   },
 });
 
