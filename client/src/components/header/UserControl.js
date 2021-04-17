@@ -7,6 +7,7 @@ import {
   Avatar,
   Zoom,
   Tooltip,
+  Hidden,
 } from "@material-ui/core";
 
 import headerStyles from "./Header-styles";
@@ -51,7 +52,9 @@ const UserControl = () => {
               color="secondary"
               ref={buttonRef}
             >
-              <Typography variant="subtitle1">{user.username}</Typography>
+              <Hidden xsDown>
+                <Typography variant="subtitle1">{user.username}</Typography>
+              </Hidden>
               <Avatar
                 variant="rounded"
                 src={user.avatar}
