@@ -4,6 +4,7 @@ import activeUsersReducer from "./active-users";
 import userReducer from "./user";
 import roomReducer from "./room";
 import roomDrawerReducer from "./room-drawer";
+import activeUsersDrawerReducer from "./active-users-drawer";
 
 const rootReducer = combineReducers({
   messages: messagesReducer,
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   room: roomReducer,
   roomDrawer: roomDrawerReducer,
+  activeUsersDrawer: activeUsersDrawerReducer,
 });
 
 export default rootReducer;
