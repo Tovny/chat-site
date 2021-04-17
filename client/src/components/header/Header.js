@@ -18,7 +18,7 @@ const Header = () => {
   return (
     <AppBar position="sticky" elevation={0}>
       <Toolbar className={classes.headerToolbar}>
-        <Hidden mdDown>
+        <Hidden smDown>
           <Typography variant="h5">{room}</Typography>
         </Hidden>
         <Hidden mdUp>
