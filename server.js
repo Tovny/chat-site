@@ -3,17 +3,22 @@ const http = require("http");
 const WebSocket = require("ws");
 var admin = require("firebase-admin");
 var serviceAccount = require("./fireAdmin.json");
+const path = require("path");
+const cors = require("cors");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
 const app = express();
+
+app.use(cors());
+
 const firestore = admin.firestore();
 
 const server = http.createServer(app);
 
-const wss = new WebSocket.Server({ port: 5000 });
+const wss = new WebSocket.Server({ server });
 
 (async () => {
   try {
@@ -55,7 +60,11 @@ const wss = new WebSocket.Server({ port: 5000 });
           const done = new Array();
 
           wss.clients.forEach((client) => {
-            if (!done.includes(client.uid) && client.room === ws.room) {
+            if (
+              !done.includes(client.uid) &&
+              client.room === ws.room &&
+              client.readyState === WebSocket.OPEN
+            ) {
               activeUsers.push({
                 username: client.username,
                 avatar: client.avatar,
@@ -81,7 +90,10 @@ const wss = new WebSocket.Server({ port: 5000 });
 
           if (!oldUser) {
             wss.clients.forEach((client) => {
-              if (client.room === ws.room)
+              if (
+                client.room === ws.room &&
+                client.readyState === WebSocket.OPEN
+              )
                 client.send(
                   JSON.stringify({ type: "newUser", payload: [newUser] })
                 );
@@ -89,7 +101,10 @@ const wss = new WebSocket.Server({ port: 5000 });
           } else {
             wss.clients.forEach((client) => {
               if (client.uid === ws.uid && client !== ws) otherSockets = true;
-              if (client.room === ws.room)
+              if (
+                client.room === ws.room &&
+                client.readyState === WebSocket.OPEN
+              )
                 client.send(
                   JSON.stringify({
                     type: "newUser",
@@ -100,9 +115,10 @@ const wss = new WebSocket.Server({ port: 5000 });
 
             if (!otherSockets) {
               wss.clients.forEach((client) => {
-                client.send(
-                  JSON.stringify({ type: "userLeft", payload: oldUser.uid })
-                );
+                if (client.readyState === WebSocket.OPEN)
+                  client.send(
+                    JSON.stringify({ type: "userLeft", payload: oldUser.uid })
+                  );
               });
             }
           }
@@ -121,10 +137,14 @@ const wss = new WebSocket.Server({ port: 5000 });
 
           if (!otherSockets)
             wss.clients.forEach((client) => {
-              client.send(
-                JSON.stringify({ type: "userLeft", payload: ws.uid })
-              );
-              if (client.room === newRoom)
+              if (client.readyState === WebSocket.OPEN)
+                client.send(
+                  JSON.stringify({ type: "userLeft", payload: ws.uid })
+                );
+              if (
+                client.room === newRoom &&
+                client.readyState === WebSocket.OPEN
+              )
                 client.send(
                   JSON.stringify({
                     type: "newUser",
@@ -152,7 +172,7 @@ const wss = new WebSocket.Server({ port: 5000 });
           message.id = res.id;
 
           wss.clients.forEach((client) => {
-            if (client.room === ws.room)
+            if (client.room === ws.room && client.readyState === WebSocket.OPEN)
               client.send(
                 JSON.stringify({
                   type: "message",
@@ -240,14 +260,15 @@ const wss = new WebSocket.Server({ port: 5000 });
 
         if (type === "logout") {
           wss.clients.forEach((client) => {
-            client.send(
-              JSON.stringify({
-                type: "newUser",
-                payload: [
-                  { username: ws.username, avatar: ws.avatar, uid: ws.uid },
-                ],
-              })
-            );
+            if (client.readyState === WebSocket.OPEN)
+              client.send(
+                JSON.stringify({
+                  type: "newUser",
+                  payload: [
+                    { username: ws.username, avatar: ws.avatar, uid: ws.uid },
+                  ],
+                })
+              );
           });
         }
 
@@ -398,7 +419,10 @@ const wss = new WebSocket.Server({ port: 5000 });
 
         if (!otherSockets)
           wss.clients.forEach((client) => {
-            client.send(JSON.stringify({ type: "userLeft", payload: ws.uid }));
+            if (client.readyState === WebSocket.OPEN)
+              client.send(
+                JSON.stringify({ type: "userLeft", payload: ws.uid })
+              );
           });
       });
     });
@@ -406,3 +430,13 @@ const wss = new WebSocket.Server({ port: 5000 });
     console.log(err);
   }
 })();
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
+
+server.listen(5000, "0.0.0.0");
