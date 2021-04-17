@@ -21,7 +21,7 @@ import ChatWindow from "./components/chat-window/Chat-window";
 import Header from "./components/header/Header";
 import Rooms from "./components/rooms/Rooms";
 
-import { CssBaseline, Container, Grid, Hidden } from "@material-ui/core";
+import { CssBaseline, Container, Grid } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/core/styles";
 import mainTheme from "./themes/main";
 import appStyles from "./AppStyles";
@@ -84,11 +84,9 @@ function App() {
         <Header />
         <Container maxWidth="xl" className={classes.appContainer}>
           <Grid container direction="row" alignItems="center">
-            <Hidden smDown>
-              <Grid item md={3}>
-                <Rooms />
-              </Grid>
-            </Hidden>
+            <Grid item md={3}>
+              <Rooms />
+            </Grid>
             <Grid item xs={12} md={9}>
               <ChatWindow />
             </Grid>
