@@ -14,6 +14,13 @@ const roomStyles = makeStyles((theme) => ({
     display: "flex",
     flexFlow: "column",
   },
+  drawerGlobalDiv: {
+    display: "flex",
+    alignItems: "center",
+  },
+  closeIcon: {
+    marginLeft: "0.25rem",
+  },
   globalButton: {
     border: "3px solid black",
     "&:hover": {
