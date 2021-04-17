@@ -6,6 +6,8 @@ var serviceAccount = require("./fireAdmin.json");
 const path = require("path");
 const cors = require("cors");
 
+const PORT = process.env.PORT || 5000;
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
@@ -439,4 +441,4 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-server.listen(5000, "0.0.0.0");
+server.listen(PORT, "0.0.0.0");
