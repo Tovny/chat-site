@@ -13,6 +13,7 @@ import {
   Avatar,
   Zoom,
 } from "@material-ui/core";
+import SendIcon from "@material-ui/icons/Send";
 
 const Messages = ({ messages, sendMessage, user, room, classes }) => {
   const [message, setMessage] = useState("");
@@ -70,7 +71,7 @@ const Messages = ({ messages, sendMessage, user, room, classes }) => {
             value={message}
             disabled={!message}
           >
-            Send
+            <SendIcon />
           </Button>
         </ButtonGroup>
       </form>
