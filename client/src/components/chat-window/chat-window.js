@@ -81,7 +81,7 @@ const ChatWindow = () => {
 
   return (
     <Grid container className={classes.chatWindow}>
-      <Grid item xs={12} sm={9} className={classes.messageWindow}>
+      <Grid item xs={12} sm={8} className={classes.messageWindow}>
         <Messages
           messages={messages}
           sendMessage={sendMessage}
@@ -91,7 +91,7 @@ const ChatWindow = () => {
         />
       </Grid>
       <Hidden xsDown>
-        <Grid item sm={3} className={classes.activeUsersContainer}>
+        <Grid item sm={4} className={classes.activeUsersContainer}>
           <ActiveUsers activeUsers={activeUsers} classes={classes} />
         </Grid>
       </Hidden>
