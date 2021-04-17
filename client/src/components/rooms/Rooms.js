@@ -43,7 +43,7 @@ const Rooms = () => {
 
   return (
     <>
-      <Hidden mdDown>
+      <Hidden smDown>
         <Container className={classes.roomsContainer}>
           <RoomsElt
             classes={classes}
