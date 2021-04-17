@@ -51,9 +51,10 @@ const UserControl = () => {
               }}
               color="secondary"
               ref={buttonRef}
+              size="small"
             >
               <Hidden xsDown>
-                <Typography variant="subtitle1">{user.username}</Typography>
+                <Typography variant="subtitle2">{user.username}</Typography>
               </Hidden>
               <Avatar
                 variant="rounded"
@@ -77,6 +78,7 @@ const UserControl = () => {
               onClick={() => setMenuOpen(true)}
               color="secondary"
               ref={buttonRef}
+              size="small"
             >
               Sign In
             </Button>
