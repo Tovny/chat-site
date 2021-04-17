@@ -53,7 +53,7 @@ const useMessageStyles = makeStyles({
   },
   typingGroup: {
     display: "grid",
-    gridTemplateColumns: "1fr 150px",
+    gridTemplateColumns: "1fr 55px",
     marginTop: "1rem",
   },
   activeUsersContainer: {
@@ -61,6 +61,18 @@ const useMessageStyles = makeStyles({
     flexFlow: "column",
     height: "calc(100vh - 4.25rem)",
     padding: "0 0.5rem",
+  },
+  activeUsersContainerDrawer: {
+    display: "flex",
+    flexFlow: "column",
+    height: "100vh",
+    minWidth: "50vw",
+    padding: "1rem",
+  },
+  drawerUsersDiv: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   activeUsers: {
     flex: "1 1 auto",

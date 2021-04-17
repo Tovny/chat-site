@@ -11,6 +11,7 @@ import {
   removeActiveUser,
   resetActiveUsers,
 } from "../../redux/actions/active-users-actions";
+import setOpenActiveUsersDrawer from "../../redux/actions/active-users-drawer-actions";
 
 import {
   userSubject$,
@@ -26,7 +27,7 @@ import {
 import Messages from "./Messages";
 import ActiveUsers from "./Active-users";
 
-import { Grid, Paper, Hidden, Typography } from "@material-ui/core";
+import { Drawer, Grid, Hidden } from "@material-ui/core";
 import useMessageStyles from "./Chat-window-styles";
 
 const ChatWindow = () => {
@@ -38,6 +39,7 @@ const ChatWindow = () => {
   const activeUsers = useSelector((state) => state.activeUsers);
   const user = useSelector((state) => state.user);
   const room = useSelector((state) => state.room);
+  const drawerOpen = useSelector((state) => state.activeUsersDrawer);
 
   useObservable(messages$, setMessages);
   useObservable(activeUsers$, setActiveUsers);
@@ -90,18 +92,20 @@ const ChatWindow = () => {
       </Grid>
       <Hidden xsDown>
         <Grid item sm={3} className={classes.activeUsersContainer}>
-          <Typography
-            variant="h6"
-            align="center"
-            className={classes.activesHeading}
-          >
-            Active Users
-          </Typography>
-          <Paper variant="outlined" square className={classes.activeUsers}>
-            <ActiveUsers activeUsers={activeUsers} classes={classes} />
-          </Paper>
+          <ActiveUsers activeUsers={activeUsers} classes={classes} />
         </Grid>
       </Hidden>
+      <Drawer
+        open={drawerOpen}
+        onClose={() => dispatch(setOpenActiveUsersDrawer(false))}
+        anchor="right"
+      >
+        <ActiveUsers
+          activeUsers={activeUsers}
+          classes={classes}
+          drawer={true}
+        />
+      </Drawer>
     </Grid>
   );
 };
