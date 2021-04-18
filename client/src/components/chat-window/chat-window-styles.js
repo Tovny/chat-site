@@ -33,7 +33,8 @@ const useMessageStyles = makeStyles({
     fontWeight: "bold",
   },
   postTime: {
-    marginLeft: "0.5rem",
+    marginLeft: ".75rem",
+    fontSize: "0.7rem",
   },
   postHeadingPaper: {
     display: "flex",
@@ -76,7 +77,6 @@ const useMessageStyles = makeStyles({
   },
   activeUsers: {
     flex: "1 1 auto",
-    padding: "0 .5rem",
     overflow: "auto",
     "&::-webkit-scrollbar-track": {
       backgroundColor: "rgba(0,0,0,.1)",
@@ -92,8 +92,7 @@ const useMessageStyles = makeStyles({
     margin: "10px 0",
   },
   activeUserContainer: {
-    paddingLeft: "0.5rem",
-    paddingTop: "0.5rem",
+    padding: "0.5rem",
   },
   activeUserAvatar: {
     marginRight: "0.5rem",
