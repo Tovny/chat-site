@@ -13,6 +13,7 @@ const options = {
   key: fs.readFileSync("key.pem"),
   cert: fs.readFileSync("cert.pem"),
 };
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
@@ -420,4 +421,4 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-server.listen(5000);
+server.listen(PORT);
