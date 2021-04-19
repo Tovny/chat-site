@@ -21,8 +21,10 @@ const Messages = ({ messages, sendMessage, user, room, classes }) => {
 
   useEffect(() => {
     const container = containerRef.current;
-    if (container.lastChild)
+    if (container.lastChild) {
       container.lastChild.scrollIntoView({ behavior: "smooth" });
+      container.scrollBy(0, container.getBoundingClientRect().height);
+    }
   }, [messages]);
 
   const onSubmit = (e) => {
