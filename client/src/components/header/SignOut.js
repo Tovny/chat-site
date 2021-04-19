@@ -1,4 +1,8 @@
 import { useSelector } from "react-redux";
+
+import firebase from "firebase/app";
+import "firebase/auth";
+
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
@@ -19,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignOut({ setSignOutOpen, firebase }) {
+export default function SignOut({ setSignOutOpen }) {
   const classes = useStyles();
 
   const user = useSelector((state) => state.user);

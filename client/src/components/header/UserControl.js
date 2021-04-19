@@ -1,5 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 
+import { useSelector } from "react-redux";
+
+import firebase from "firebase/app";
+import "firebase/auth";
+
+import { IfFirebaseAuthed, IfFirebaseUnAuthed } from "@react-firebase/auth";
+
 import {
   Button,
   Menu,
@@ -16,12 +23,6 @@ import SignUp from "./SignUp";
 import SignIn from "./SignIn";
 import SignOut from "./SignOut";
 import PasswordReset from "./PasswordReset";
-
-import { IfFirebaseAuthed, IfFirebaseUnAuthed } from "@react-firebase/auth";
-
-import { useSelector } from "react-redux";
-
-import firebase from "firebase/app";
 
 const UserControl = () => {
   const classes = headerStyles();
@@ -130,7 +131,7 @@ const UserControl = () => {
         keepMounted
         open={signOutOpen}
       >
-        <SignOut setSignOutOpen={setSignOutOpen} firebase={firebase} />
+        <SignOut setSignOutOpen={setSignOutOpen} />
       </Menu>
     </>
   );

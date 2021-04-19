@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 
 import firebase from "firebase/app";
+import "firebase/auth";
 
 import Alert from "@material-ui/lab/Alert";
 import Button from "@material-ui/core/Button";
