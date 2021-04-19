@@ -4,7 +4,7 @@ const WebSocket = require("ws");
 const path = require("path");
 const cors = require("cors");
 const admin = require("firebase-admin");
-const firebaseConfig = require("./config");
+const firebaseConfig = process.env.FIREBASE_CONFIG;
 
 const PORT = process.env.PORT || 5000;
 
