@@ -1,27 +1,24 @@
 const express = require("express");
 const http = require("http");
 const WebSocket = require("ws");
-var admin = require("firebase-admin");
-var serviceAccount = require("./fireAdmin.json");
 const path = require("path");
 const cors = require("cors");
-const fs = require("fs");
+const admin = require("firebase-admin");
+const firebaseConfig = require("./config");
 
 const PORT = process.env.PORT || 5000;
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
 
 const app = express();
 
 app.use(cors());
 
-const firestore = admin.firestore();
-
 const server = http.createServer(app);
-
 const wss = new WebSocket.Server({ server });
+
+admin.initializeApp({
+  credential: admin.credential.cert(firebaseConfig),
+});
+const firestore = admin.firestore();
 
 wss.on("connection", (ws) => {
   ws.on("message", async (msg) => {
