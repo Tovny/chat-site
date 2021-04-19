@@ -14,6 +14,7 @@ import headerStyles from "./Header-styles";
 
 import SignUp from "./SignUp";
 import SignIn from "./SignIn";
+import SignOut from "./SignOut";
 import PasswordReset from "./PasswordReset";
 
 import { IfFirebaseAuthed, IfFirebaseUnAuthed } from "@react-firebase/auth";
@@ -26,6 +27,7 @@ const UserControl = () => {
   const classes = headerStyles();
   const user = useSelector((state) => state.user);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [signOutOpen, setSignOutOpen] = useState(false);
   const [activePage, setActivePage] = useState("signIn");
   const buttonRef = useRef(null);
 
@@ -43,19 +45,36 @@ const UserControl = () => {
     <>
       {user && (
         <IfFirebaseAuthed>
-          <Tooltip title={"Logout"} arrow TransitionComponent={Zoom}>
+          <Hidden xsDown>
+            <Tooltip title={"Logout"} arrow TransitionComponent={Zoom}>
+              <Button
+                onClick={() => {
+                  setMenuOpen(false);
+                  firebase.auth().signOut();
+                }}
+                color="secondary"
+                ref={buttonRef}
+                size="small"
+              >
+                <Typography variant="subtitle2">{user.username}</Typography>
+                <Avatar
+                  variant="rounded"
+                  src={user.avatar}
+                  alt={user.username}
+                  className={classes.userAvatar}
+                ></Avatar>
+              </Button>
+            </Tooltip>
+          </Hidden>
+          <Hidden smUp>
             <Button
               onClick={() => {
-                setMenuOpen(false);
-                firebase.auth().signOut();
+                setSignOutOpen(true);
               }}
               color="secondary"
               ref={buttonRef}
               size="small"
             >
-              <Hidden xsDown>
-                <Typography variant="subtitle2">{user.username}</Typography>
-              </Hidden>
               <Avatar
                 variant="rounded"
                 src={user.avatar}
@@ -63,7 +82,7 @@ const UserControl = () => {
                 className={classes.userAvatar}
               ></Avatar>
             </Button>
-          </Tooltip>
+          </Hidden>
         </IfFirebaseAuthed>
       )}
       <IfFirebaseUnAuthed>
@@ -104,6 +123,14 @@ const UserControl = () => {
         {activePage === "passwordReset" && (
           <PasswordReset setActivePage={setActivePage} />
         )}
+      </Menu>
+      <Menu
+        anchorEl={buttonRef.current}
+        onClose={() => setSignOutOpen(false)}
+        keepMounted
+        open={signOutOpen}
+      >
+        <SignOut setSignOutOpen={setSignOutOpen} firebase={firebase} />
       </Menu>
     </>
   );
