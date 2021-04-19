@@ -5,7 +5,7 @@ import { catchError, map, filter, pairwise } from "rxjs/operators";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-const WS_ENDPOINT = "wss://localhost:5000";
+const WS_ENDPOINT = "ws://chat-app-tovny.herokuapp.com/";
 
 // OBSERVABLES
 
