@@ -1,5 +1,5 @@
 const express = require("express");
-const https = require("https");
+const http = require("http");
 const WebSocket = require("ws");
 var admin = require("firebase-admin");
 var serviceAccount = require("./fireAdmin.json");
@@ -8,11 +8,6 @@ const cors = require("cors");
 const fs = require("fs");
 
 const PORT = process.env.PORT || 5000;
-
-const options = {
-  key: fs.readFileSync("key.pem"),
-  cert: fs.readFileSync("cert.pem"),
-};
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -24,10 +19,7 @@ app.use(cors());
 
 const firestore = admin.firestore();
 
-const server = https.createServer(options, app, function (req, res) {
-  res.writeHead(200);
-  res.end("hello world\n");
-});
+const server = http.createServer(app);
 
 const wss = new WebSocket.Server({ server });
 
