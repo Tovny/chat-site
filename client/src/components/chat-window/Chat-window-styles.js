@@ -7,7 +7,7 @@ const useMessageStyles = makeStyles({
   },
   messageWindow: {},
   messagesContainer: {
-    height: "calc(100vh - 8.75rem)",
+    height: "calc(100vh - 7.75rem)",
     overflow: "auto",
     "&::-webkit-scrollbar-track": {
       backgroundColor: "rgba(0,0,0,.1)",
