@@ -47,6 +47,18 @@ admin.initializeApp({
 const firestore = admin.firestore();
 
 wss.on("connection", (ws) => {
+  ws.isAlive = true;
+
+  const keepAliveInterval = setInterval(() => {
+    if (!ws.isAlive) return ws.terminate();
+    ws.isAlive = false;
+    ws.ping();
+  }, 1000 * 60);
+
+  ws.on("pong", () => {
+    ws.isAlive = true;
+  });
+
   ws.on("message", async (msg) => {
     const {
       type,
@@ -108,6 +120,8 @@ wss.on("connection", (ws) => {
         if (client.readyState === WebSocket.OPEN)
           client.send(JSON.stringify({ type: "userLeft", payload: ws.uid }));
       });
+
+    clearInterval(keepAliveInterval);
 
     ws.close();
   });
