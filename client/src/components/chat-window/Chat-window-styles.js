@@ -66,7 +66,7 @@ const useMessageStyles = makeStyles({
   activeUsersContainerDrawer: {
     display: "flex",
     flexFlow: "column",
-    height: "100vh",
+    height: "100%",
     minWidth: "50vw",
     padding: "1rem",
   },
