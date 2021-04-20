@@ -17,6 +17,8 @@ import SendIcon from "@material-ui/icons/Send";
 
 const Messages = ({ messages, sendMessage, user, room, classes }) => {
   const [message, setMessage] = useState("");
+  const [newMessages, setNewMessages] = useState(1);
+
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -25,7 +27,27 @@ const Messages = ({ messages, sendMessage, user, room, classes }) => {
       container.lastChild.scrollIntoView({ behavior: "smooth" });
       container.scrollBy(0, container.getBoundingClientRect().height);
     }
+
+    if (document.visibilityState !== "visible") {
+      document.title = `(${newMessages}) Chat Site`;
+      setNewMessages(newMessages + 1);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);
+
+  const resetTitle = () => {
+    if (document.visibilityState === "visible") {
+      document.title = "Chat Site";
+      setNewMessages(1);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("visibilitychange", resetTitle);
+
+    return () => document.removeEventListener("visibilitychange", resetTitle);
+  }, []);
 
   const onSubmit = (e) => {
     e.preventDefault();
