@@ -55,7 +55,6 @@ const useMessageStyles = makeStyles({
   typingGroup: {
     display: "grid",
     gridTemplateColumns: "1fr 55px",
-    marginTop: "1rem",
   },
   activeUsersContainer: {
     display: "flex",
