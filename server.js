@@ -36,7 +36,7 @@ wss.on("connection", (ws) => {
   ws.isAlive = true;
 
   const keepAliveInterval = setInterval(() => {
-    if (!ws.isAlive) return ws.terminate();
+    if (!ws.isAlive) return ws.close();
     ws.isAlive = false;
     ws.ping();
   }, 1000 * 60);
