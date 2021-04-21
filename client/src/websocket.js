@@ -1,6 +1,13 @@
 import { Subject } from "rxjs";
 import { webSocket } from "rxjs/webSocket";
-import { catchError, map, filter, pairwise } from "rxjs/operators";
+import {
+  catchError,
+  map,
+  filter,
+  pairwise,
+  retryWhen,
+  delay,
+} from "rxjs/operators";
 
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -9,9 +16,11 @@ const WS_ENDPOINT = "wss://chat-app-tovny.herokuapp.com/";
 
 // OBSERVABLES
 
-export const socket$ = new webSocket(WS_ENDPOINT);
+export let socket$ = new webSocket(WS_ENDPOINT);
 export const userSubject$ = new Subject().pipe(pairwise());
 export const roomSubject$ = new Subject().pipe(pairwise());
+
+socket$.pipe(retryWhen((errors) => errors.pipe(delay(1000))));
 
 const createObservable = (type) => {
   return socket$.pipe(
@@ -21,23 +30,23 @@ const createObservable = (type) => {
   );
 };
 
-export const messages$ = createObservable("message");
+export let messages$ = createObservable("message");
 
-export const activeUsers$ = createObservable("newUser");
+export let activeUsers$ = createObservable("newUser");
 
-export const userLeave$ = createObservable("userLeft");
+export let userLeave$ = createObservable("userLeft");
 
-export const login$ = createObservable("login");
+export let login$ = createObservable("login");
 
-export const registrationError$ = createObservable("registrationError");
+export let registrationError$ = createObservable("registrationError");
 
-export const registrationSuccess$ = createObservable("registrationSuccess");
+export let registrationSuccess$ = createObservable("registrationSuccess");
 
-export const createRoomError$ = createObservable("createRoomError");
+export let createRoomError$ = createObservable("createRoomError");
 
-export const joinRoomError$ = createObservable("joinRoomError");
+export let joinRoomError$ = createObservable("joinRoomError");
 
-export const newRoomSuccess$ = createObservable("newRoomSucces");
+export let newRoomSuccess$ = createObservable("newRoomSucces");
 
 // ACTIONS
 
