@@ -8,6 +8,7 @@ import {
   retryWhen,
   delay,
 } from "rxjs/operators";
+import { EMPTY } from "rxjs";
 
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -26,7 +27,7 @@ const createObservable = (type) => {
   return socket$.pipe(
     filter((msg) => msg.type === type),
     map((msg) => msg.payload),
-    catchError((err) => console.log(err))
+    catchError((_) => EMPTY)
   );
 };
 
