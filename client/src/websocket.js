@@ -3,7 +3,6 @@ import { webSocket } from "rxjs/webSocket";
 import {
   catchError,
   map,
-  tap,
   filter,
   pairwise,
   retryWhen,
@@ -14,10 +13,26 @@ import { EMPTY } from "rxjs";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-const WS_ENDPOINT = `wss://${window.location.hostname}`;
+import { currentUser, currentRoom } from "./components/chat-window/Chat-window";
+
+const WS_ENDPOINT = `wss://chat-app-tovny.herokuapp.com`;
+
+let initialConnection = true;
+
+// UGOTOVIT KAK PREPRIČIT INIT RE PA DOKONČAT RE NA SERVERU PA BI MOGLO DELAT
 
 const socketConfig = {
   url: WS_ENDPOINT,
+  openObserver: {
+    next: () => {
+      console.log(currentUser);
+      socket$.next({
+        type: "reconnect",
+        user: currentUser,
+        room: currentRoom,
+      });
+    },
+  },
 };
 
 // OBSERVABLES
@@ -26,43 +41,13 @@ export let socket$ = new webSocket(socketConfig);
 export const userSubject$ = new Subject().pipe(pairwise());
 export const roomSubject$ = new Subject().pipe(pairwise());
 
-socket$.pipe(
-  retryWhen((errors) =>
-    errors.pipe(
-      delay(1000),
-      tap(
-        socket$.next({
-          type: "reconnect",
-          user: {
-            username: "tona",
-            uid: 555,
-            avatar: null,
-          },
-          room: "Global Chat",
-        })
-      )
-    )
-  )
-);
+socket$.pipe(retryWhen((errors) => errors.pipe(delay(1000))));
 
 const createObservable = (type) => {
   return socket$.pipe(
     filter((msg) => msg.type === type),
     map((msg) => msg.payload),
-    retryWhen((errors) =>
-      errors.pipe(
-        delay(1000),
-        tap(
-          socket$.next({
-            type: "reconnect",
-            username: "tona",
-            room: "Global Chat",
-            uid: 555,
-            avatar: null,
-          })
-        )
-      )
-    ),
+    retryWhen((errors) => errors.pipe(delay(1000))),
     catchError((_) => EMPTY)
   );
 };
