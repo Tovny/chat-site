@@ -13,15 +13,39 @@ import { EMPTY } from "rxjs";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-const WS_ENDPOINT = "wss://chat-app-tovny.herokuapp.com/";
+const WS_ENDPOINT = `wss://${window.location.hostname}`;
+
+const socketConfig = {
+  url: WS_ENDPOINT,
+  closeObserver: {
+    next: () => {
+      [
+        socket$,
+        messages$,
+        activeUsers$,
+        userLeave$,
+        login$,
+        registrationError$,
+        registrationSuccess$,
+        createRoomError$,
+        joinRoomError$,
+        newRoomSuccess$,
+      ].forEach((obs) => {
+        reconnect(obs);
+      });
+    },
+  },
+};
 
 // OBSERVABLES
 
-export let socket$ = new webSocket(WS_ENDPOINT);
+export let socket$ = new webSocket(socketConfig);
 export const userSubject$ = new Subject().pipe(pairwise());
 export const roomSubject$ = new Subject().pipe(pairwise());
 
-socket$.pipe(retryWhen((errors) => errors.pipe(delay(1000))));
+const reconnect = (observable) => {
+  return observable.pipe(retryWhen((errors) => errors.pipe(delay(1000))));
+};
 
 const createObservable = (type) => {
   return socket$.pipe(
@@ -31,23 +55,23 @@ const createObservable = (type) => {
   );
 };
 
-export let messages$ = createObservable("message");
+export const messages$ = createObservable("message");
 
-export let activeUsers$ = createObservable("newUser");
+export const activeUsers$ = createObservable("newUser");
 
-export let userLeave$ = createObservable("userLeft");
+export const userLeave$ = createObservable("userLeft");
 
-export let login$ = createObservable("login");
+export const login$ = createObservable("login");
 
-export let registrationError$ = createObservable("registrationError");
+export const registrationError$ = createObservable("registrationError");
 
-export let registrationSuccess$ = createObservable("registrationSuccess");
+export const registrationSuccess$ = createObservable("registrationSuccess");
 
-export let createRoomError$ = createObservable("createRoomError");
+export const createRoomError$ = createObservable("createRoomError");
 
-export let joinRoomError$ = createObservable("joinRoomError");
+export const joinRoomError$ = createObservable("joinRoomError");
 
-export let newRoomSuccess$ = createObservable("newRoomSucces");
+export const newRoomSuccess$ = createObservable("newRoomSucces");
 
 // ACTIONS
 
@@ -117,4 +141,16 @@ export const useObservableLocal = (observable, setter) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [observable]);
+};
+
+export const useKeepAlive = () => {
+  useEffect(() => {
+    const keepAlive = setInterval(() => {
+      socket$.next({ type: "ping" });
+    }, 1000 * 60);
+
+    return () => {
+      clearInterval(keepAlive);
+    };
+  }, []);
 };
