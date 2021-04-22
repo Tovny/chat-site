@@ -68,6 +68,12 @@ wss.on("connection", (ws) => {
         ws.avatar = user.avatar;
         ws.room = room;
         break;
+      case "reconnect":
+        ws.username = user.username;
+        ws.uid = user.uid;
+        ws.avatar = user.avatar;
+        ws.room = room;
+        joinRoomHandler(wss, ws, room, firestore);
       case "join":
         joinRoomHandler(wss, ws, room, firestore);
         break;

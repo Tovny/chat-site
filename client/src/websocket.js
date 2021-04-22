@@ -26,13 +26,43 @@ export let socket$ = new webSocket(socketConfig);
 export const userSubject$ = new Subject().pipe(pairwise());
 export const roomSubject$ = new Subject().pipe(pairwise());
 
-socket$.pipe(retryWhen((errors) => errors.pipe(delay(1000))));
+socket$.pipe(
+  retryWhen((errors) =>
+    errors.pipe(
+      delay(1000),
+      tap(
+        socket$.next({
+          type: "reconnect",
+          user: {
+            username: "tona",
+            uid: 555,
+            avatar: null,
+          },
+          room: "Global Chat",
+        })
+      )
+    )
+  )
+);
 
 const createObservable = (type) => {
   return socket$.pipe(
     filter((msg) => msg.type === type),
     map((msg) => msg.payload),
-    retryWhen((errors) => errors.pipe(delay(1000))),
+    retryWhen((errors) =>
+      errors.pipe(
+        delay(1000),
+        tap(
+          socket$.next({
+            type: "reconnect",
+            username: "tona",
+            room: "Global Chat",
+            uid: 555,
+            avatar: null,
+          })
+        )
+      )
+    ),
     catchError((_) => EMPTY)
   );
 };
@@ -129,10 +159,10 @@ export const useObservableLocal = (observable, setter) => {
   }, [observable]);
 };
 
-export const useKeepAlive = (user, room) => {
+export const useKeepAlive = () => {
   useEffect(() => {
     const keepAlive = setInterval(() => {
-      socket$.next({ type: "ping", user, room });
+      socket$.next({ type: "ping" });
     }, 1000 * 60);
 
     return () => {
