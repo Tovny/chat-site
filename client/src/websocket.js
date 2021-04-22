@@ -3,6 +3,7 @@ import { webSocket } from "rxjs/webSocket";
 import {
   catchError,
   map,
+  tap,
   filter,
   pairwise,
   retryWhen,
@@ -25,7 +26,14 @@ export let socket$ = new webSocket(socketConfig);
 export const userSubject$ = new Subject().pipe(pairwise());
 export const roomSubject$ = new Subject().pipe(pairwise());
 
-socket$.pipe(retryWhen((errors) => errors.pipe(delay(1000))));
+socket$.pipe(
+  retryWhen((errors) =>
+    errors.pipe(
+      delay(1000),
+      tap(() => sendMessage("hello there", "sistem", "Global Chat"))
+    )
+  )
+);
 
 const createObservable = (type) => {
   return socket$.pipe(
