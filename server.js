@@ -39,7 +39,7 @@ wss.on("connection", (ws) => {
     if (!ws.isAlive) return ws.close();
     ws.isAlive = false;
     ws.ping();
-  }, 1000 * 60);
+  }, 1000 * 60 * 5);
 
   ws.on("pong", () => {
     ws.isAlive = true;
@@ -60,6 +60,9 @@ wss.on("connection", (ws) => {
     if (!ws.room) ws.room = "Global Chat";
 
     switch (type) {
+      case "ping":
+        ws.isAlive = true;
+        break;
       case "join":
         joinRoomHandler(wss, ws, room, firestore);
         break;
