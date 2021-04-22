@@ -17,24 +17,6 @@ const WS_ENDPOINT = `wss://${window.location.hostname}`;
 
 const socketConfig = {
   url: WS_ENDPOINT,
-  closeObserver: {
-    next: () => {
-      [
-        socket$,
-        messages$,
-        activeUsers$,
-        userLeave$,
-        login$,
-        registrationError$,
-        registrationSuccess$,
-        createRoomError$,
-        joinRoomError$,
-        newRoomSuccess$,
-      ].forEach((obs) => {
-        reconnect(obs);
-      });
-    },
-  },
 };
 
 // OBSERVABLES
@@ -43,14 +25,13 @@ export let socket$ = new webSocket(socketConfig);
 export const userSubject$ = new Subject().pipe(pairwise());
 export const roomSubject$ = new Subject().pipe(pairwise());
 
-const reconnect = (observable) => {
-  return observable.pipe(retryWhen((errors) => errors.pipe(delay(1000))));
-};
+socket$.pipe(retryWhen((errors) => errors.pipe(delay(1000))));
 
 const createObservable = (type) => {
   return socket$.pipe(
     filter((msg) => msg.type === type),
     map((msg) => msg.payload),
+    retryWhen((errors) => errors.pipe(delay(1000))),
     catchError((_) => EMPTY)
   );
 };
@@ -117,9 +98,13 @@ export const useObservable = (observable, setter) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    observable.subscribe((msg) => {
-      dispatch(setter(msg));
-    });
+    observable.subscribe(
+      (msg) => {
+        dispatch(setter(msg));
+      },
+      (err) => console.log(err),
+      () => observable.unsubscribe()
+    );
 
     return () => {
       observable.unsubscribe();
