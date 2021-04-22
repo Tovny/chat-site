@@ -59,9 +59,14 @@ wss.on("connection", (ws) => {
 
     if (!ws.room) ws.room = "Global Chat";
 
+    ws.isAlive = true;
+
     switch (type) {
       case "ping":
-        ws.isAlive = true;
+        ws.username = user.username;
+        ws.uid = user.uid;
+        ws.avatar = user.avatar;
+        ws.room = room;
         break;
       case "join":
         joinRoomHandler(wss, ws, room, firestore);
