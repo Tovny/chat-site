@@ -30,6 +30,8 @@ import ActiveUsers from "./Active-users";
 import { Drawer, Grid, Hidden } from "@material-ui/core";
 import useMessageStyles from "./Chat-window-styles";
 
+export let currentUser, currentRoom;
+
 const ChatWindow = () => {
   const dispatch = useDispatch();
 
@@ -71,12 +73,14 @@ const ChatWindow = () => {
     }
 
     roomSubject$.next(room);
+    currentRoom = room;
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [room]);
 
   useEffect(() => {
     userSubject$.next(user);
+    currentUser = user;
   }, [user]);
 
   return (
