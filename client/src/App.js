@@ -8,6 +8,7 @@ import { setUser, setUserRooms } from "./redux/actions/user-actions";
 import setRoom from "./redux/actions/room-actions";
 
 import {
+  useKeepAlive,
   useObservable,
   login$,
   userSubject$,
@@ -31,6 +32,7 @@ function App() {
   const classes = appStyles();
 
   useObservable(login$, setUserRooms);
+  useKeepAlive();
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {

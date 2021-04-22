@@ -14,7 +14,6 @@ import {
 import setOpenActiveUsersDrawer from "../../redux/actions/active-users-drawer-actions";
 
 import {
-  useKeepAlive,
   userSubject$,
   roomSubject$,
   messages$,
@@ -45,7 +44,6 @@ const ChatWindow = () => {
   useObservable(messages$, setMessages);
   useObservable(activeUsers$, setActiveUsers);
   useObservable(userLeave$, removeActiveUser);
-  useKeepAlive(user, room);
 
   useEffect(() => {
     if (!user) {
