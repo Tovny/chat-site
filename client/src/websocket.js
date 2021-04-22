@@ -26,14 +26,7 @@ export let socket$ = new webSocket(socketConfig);
 export const userSubject$ = new Subject().pipe(pairwise());
 export const roomSubject$ = new Subject().pipe(pairwise());
 
-socket$.pipe(
-  retryWhen((errors) =>
-    errors.pipe(
-      delay(1000),
-      tap(() => sendMessage("hello there", "sistem", "Global Chat"))
-    )
-  )
-);
+socket$.pipe(retryWhen((errors) => errors.pipe(delay(1000))));
 
 const createObservable = (type) => {
   return socket$.pipe(
@@ -136,10 +129,10 @@ export const useObservableLocal = (observable, setter) => {
   }, [observable]);
 };
 
-export const useKeepAlive = () => {
+export const useKeepAlive = (user, room) => {
   useEffect(() => {
     const keepAlive = setInterval(() => {
-      socket$.next({ type: "ping" });
+      socket$.next({ type: "ping", user, room });
     }, 1000 * 60);
 
     return () => {
