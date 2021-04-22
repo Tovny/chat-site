@@ -15,7 +15,6 @@ import {
   sendLogin,
   sendUserChange,
   sendRoomChange,
-  useKeepAlive,
 } from "./websocket";
 
 import ChatWindow from "./components/chat-window/Chat-window";
@@ -32,7 +31,6 @@ function App() {
   const classes = appStyles();
 
   useObservable(login$, setUserRooms);
-  useKeepAlive();
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
