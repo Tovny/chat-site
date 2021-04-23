@@ -40,7 +40,7 @@ wss.on("connection", (ws) => {
     if (!ws.isAlive) return ws.close();
     ws.isAlive = false;
     ws.ping();
-  }, 1000 * 60);
+  }, 1000 * 60 * 10);
 
   ws.on("pong", () => {
     ws.isAlive = true;
