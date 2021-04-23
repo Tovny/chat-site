@@ -1,4 +1,4 @@
-export let currentRoom = "Global Chat";
+let currentRoom = "Global Chat";
 
 const roomReducer = (state = "Global Chat", action) => {
   switch (action.type) {
@@ -16,3 +16,4 @@ const roomReducer = (state = "Global Chat", action) => {
 };
 
 export default roomReducer;
+export { currentRoom };

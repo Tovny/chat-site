@@ -1,4 +1,4 @@
-export let lastMessage;
+let lastMessage;
 
 const messagesReducer = (state = [], action) => {
   switch (action.type) {
@@ -15,3 +15,4 @@ const messagesReducer = (state = [], action) => {
 };
 
 export default messagesReducer;
+export { lastMessage };
