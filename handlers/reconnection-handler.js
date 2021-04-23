@@ -1,3 +1,5 @@
+const WebSocket = require("ws");
+
 const reconnectionHandler = async (wss, ws, firestore, user, room, payload) => {
   if (payload.reconnect) {
     ws.username = user.username;
@@ -12,11 +14,11 @@ const reconnectionHandler = async (wss, ws, firestore, user, room, payload) => {
 
     const messages = new Array();
 
-    for (let doc of fireMessages) {
+    for (let doc of fireMessages.docs) {
       const message = doc.data();
       message.id = doc.id;
 
-      if (message.id !== payload.lastMessage) {
+      if (message.id !== payload.lastMessage.id) {
         messages.unshift(message);
       } else {
         break;
