@@ -1,9 +1,6 @@
-let lastMessage;
-
 const messagesReducer = (state = [], action) => {
   switch (action.type) {
     case "SET_MESSAGES": {
-      lastMessage = action.payload[action.payload.length - 1];
       return [...state, ...action.payload];
     }
     case "RESET_MESSAGES": {
@@ -15,4 +12,3 @@ const messagesReducer = (state = [], action) => {
 };
 
 export default messagesReducer;
-export { lastMessage };

@@ -13,15 +13,15 @@ import { EMPTY } from "rxjs";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-import { currentRoom } from "./redux/reducers/room";
-import { currentUser } from "./redux/reducers/user";
-import { lastMessage } from "./redux/reducers/messages";
+import {
+  currentUser,
+  currentRoom,
+  lastMessage,
+} from "./components/chat-window/Chat-window";
 
 const WS_ENDPOINT = `wss://chat-app-tovny.herokuapp.com`;
 
 let reconnect = false;
-
-// UGOTOVIT KAK PREPRIČIT INIT RE PA DOKONČAT RE NA SERVERU PA BI MOGLO DELAT
 
 const socketConfig = {
   url: WS_ENDPOINT,
@@ -36,6 +36,7 @@ const socketConfig = {
           lastMessage: lastMessage.id,
         },
       });
+      reconnect = true;
     },
   },
 };

@@ -30,7 +30,7 @@ import ActiveUsers from "./Active-users";
 import { Drawer, Grid, Hidden } from "@material-ui/core";
 import useMessageStyles from "./Chat-window-styles";
 
-export let currentUser, currentRoom;
+export let currentUser, currentRoom, lastMessage;
 
 const ChatWindow = () => {
   const dispatch = useDispatch();
@@ -82,6 +82,10 @@ const ChatWindow = () => {
     userSubject$.next(user);
     currentUser = user;
   }, [user]);
+
+  useEffect(() => {
+    lastMessage = messages[messages.length - 1];
+  }, [messages]);
 
   return (
     <Grid container className={classes.chatWindow}>
