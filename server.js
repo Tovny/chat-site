@@ -13,6 +13,7 @@ const messageHandler = require("./handlers/message-handler");
 const emailRegistrationHandler = require("./handlers/email-registration-handler");
 const loginHandler = require("./handlers/login-handler");
 const logoutHandler = require("./handlers/logout-handler");
+const reconnectionHandler = require("./handlers/reconnection-handler");
 const {
   createRoomHandler,
   joinNewRoomHandler,
@@ -63,17 +64,10 @@ wss.on("connection", (ws) => {
 
     switch (type) {
       case "ping":
-        ws.username = user.username;
-        ws.uid = user.uid;
-        ws.avatar = user.avatar;
-        ws.room = room;
         break;
       case "reconnect":
-        ws.username = user.username;
-        ws.uid = user.uid;
-        ws.avatar = user.avatar;
-        ws.room = room;
-        joinRoomHandler(wss, ws, room, firestore);
+        reconnectionHandler(wss, ws, firestore, user, room, payload);
+        break;
       case "join":
         joinRoomHandler(wss, ws, room, firestore);
         break;
