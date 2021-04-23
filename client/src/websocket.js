@@ -13,11 +13,13 @@ import { EMPTY } from "rxjs";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-import { currentUser, currentRoom } from "./components/chat-window/Chat-window";
+import { currentRoom } from "./redux/reducers/room";
+import { currentUser } from "./redux/reducers/user";
+import { lastMessage } from "./redux/reducers/messages";
 
 const WS_ENDPOINT = `wss://chat-app-tovny.herokuapp.com`;
 
-let initialConnection = true;
+let reconnect = false;
 
 // UGOTOVIT KAK PREPRIČIT INIT RE PA DOKONČAT RE NA SERVERU PA BI MOGLO DELAT
 
@@ -25,11 +27,14 @@ const socketConfig = {
   url: WS_ENDPOINT,
   openObserver: {
     next: () => {
-      console.log(currentUser);
       socket$.next({
         type: "reconnect",
         user: currentUser,
         room: currentRoom,
+        payload: {
+          reconnect,
+          lastMessage: lastMessage.id,
+        },
       });
     },
   },
