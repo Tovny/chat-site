@@ -4,7 +4,7 @@ const roomStyles = makeStyles((theme) => ({
   roomsContainer: {
     marginTop: 10,
     padding: "0 0.5rem",
-    height: "calc(100vh - 5rem)",
+    height: "calc(100vh - 5.5rem)",
     display: "flex",
     flexFlow: "column",
   },

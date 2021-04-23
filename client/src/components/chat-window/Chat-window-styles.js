@@ -7,7 +7,7 @@ const useMessageStyles = makeStyles({
   },
   messageWindow: {},
   messagesContainer: {
-    height: "calc(100vh - 7.75rem)",
+    height: "calc(100vh - 7.5rem)",
     overflow: "auto",
     "&::-webkit-scrollbar-track": {
       backgroundColor: "rgba(0,0,0,.1)",
@@ -59,14 +59,14 @@ const useMessageStyles = makeStyles({
   activeUsersContainer: {
     display: "flex",
     flexFlow: "column",
-    height: "calc(100vh - 4.25rem)",
+    height: "calc(100vh - 4.5rem)",
     padding: "0 0.5rem",
   },
   activeUsersContainerDrawer: {
     display: "flex",
     flexFlow: "column",
     height: "100%",
-    minWidth: "50vw",
+    minWidth: "225px",
     padding: "1rem",
   },
   drawerUsersDiv: {
