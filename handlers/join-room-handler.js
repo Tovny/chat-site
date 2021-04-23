@@ -2,7 +2,7 @@ const WebSocket = require("ws");
 
 const joinRoomHandler = async (wss, ws, room, firestore) => {
   const fireMessages = await firestore
-    .collection(room) // change to room
+    .collection(room)
     .orderBy("time", "asc")
     .limitToLast(25)
     .get();
@@ -10,7 +10,6 @@ const joinRoomHandler = async (wss, ws, room, firestore) => {
   const messages = new Array();
 
   fireMessages.forEach((doc) => {
-    // GET ALL MESSAGE DATA AND ATTACH THE ID
     const message = doc.data();
     message.id = doc.id;
 
