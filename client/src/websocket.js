@@ -13,11 +13,9 @@ import { EMPTY } from "rxjs";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-import {
-  currentUser,
-  currentRoom,
-  lastMessage,
-} from "./components/chat-window/Chat-window";
+import { currentRoom } from "./redux/reducers/room";
+import { currentUser } from "./redux/reducers/user";
+import { lastMessage } from "./redux/reducers/messages";
 
 const WS_ENDPOINT = `wss://chat-app-tovny.herokuapp.com`;
 
