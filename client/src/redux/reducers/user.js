@@ -1,4 +1,4 @@
-let currentUser;
+export let currentUser;
 
 const userReducer = (state = null, action) => {
   switch (action.type) {
@@ -14,4 +14,4 @@ const userReducer = (state = null, action) => {
   }
 };
 
-module.exports = { userReducer, currentUser };
+export default userReducer;

@@ -1,4 +1,4 @@
-let lastMessage;
+export let lastMessage;
 
 const messagesReducer = (state = [], action) => {
   switch (action.type) {
@@ -14,4 +14,4 @@ const messagesReducer = (state = [], action) => {
   }
 };
 
-module.exports = { messagesReducer, lastMessage };
+export default messagesReducer;
