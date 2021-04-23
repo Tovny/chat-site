@@ -1,5 +1,3 @@
-const { lastMessage } = require("../client/src/redux/reducers/messages");
-
 const reconnectionHandler = async (wss, ws, firestore, user, room, payload) => {
   if (payload.reconnect) {
     ws.username = user.username;
@@ -8,7 +6,7 @@ const reconnectionHandler = async (wss, ws, firestore, user, room, payload) => {
     ws.room = room;
 
     const fireMessages = await firestore
-      .collection(room) // change to room
+      .collection(room)
       .orderBy("time", "desc")
       .get();
 
@@ -18,7 +16,7 @@ const reconnectionHandler = async (wss, ws, firestore, user, room, payload) => {
       const message = doc.data();
       message.id = doc.id;
 
-      if (message.id !== lastMessage) {
+      if (message.id !== payload.lastMessage) {
         messages.unshift(message);
       } else {
         break;

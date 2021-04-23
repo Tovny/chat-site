@@ -13,15 +13,15 @@ import { EMPTY } from "rxjs";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-//import { currentRoom } from "./redux/reducers/room";
-//import { currentUser } from "./redux/reducers/user";
-//import { lastMessage } from "./redux/reducers/messages";
+import { currentRoom } from "./redux/reducers/room";
+import { currentUser } from "./redux/reducers/user";
+import { lastMessage } from "./redux/reducers/messages";
 
 const WS_ENDPOINT = `wss://chat-app-tovny.herokuapp.com`;
 
 let reconnect = false;
 
-/*const socketConfig = {
+const socketConfig = {
   url: WS_ENDPOINT,
   openObserver: {
     next: () => {
@@ -37,11 +37,11 @@ let reconnect = false;
       reconnect = true;
     },
   },
-};*/
+};
 
 // OBSERVABLES
 
-export let socket$ = new webSocket(WS_ENDPOINT);
+export let socket$ = new webSocket(socketConfig);
 export const userSubject$ = new Subject().pipe(pairwise());
 export const roomSubject$ = new Subject().pipe(pairwise());
 
