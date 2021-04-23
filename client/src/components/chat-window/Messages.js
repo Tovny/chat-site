@@ -22,16 +22,18 @@ const Messages = ({ messages, sendMessage, user, room, classes }) => {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (container.lastChild) {
-      container.lastChild.scrollIntoView({ behavior: "smooth" });
-      container.scrollBy(0, container.getBoundingClientRect().height);
-    }
-
     if (document.visibilityState !== "visible") {
       document.title = `(${newMessages}) Chat Site`;
       setNewMessages(newMessages + 1);
     }
+
+    setTimeout(() => {
+      const container = containerRef.current;
+      if (container.lastChild) {
+        container.lastChild.scrollIntoView({ behavior: "smooth" });
+        container.scrollBy(0, 500);
+      }
+    }, 100);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);
