@@ -17,7 +17,7 @@ import { currentRoom } from "./redux/reducers/room";
 import { currentUser } from "./redux/reducers/user";
 import { lastMessage } from "./redux/reducers/messages";
 
-const WS_ENDPOINT = `wss://chat-app-tovny.herokuapp.com`;
+const WS_ENDPOINT = `wss://${window.location.hostname}`;
 
 let reconnect = false;
 
@@ -31,7 +31,7 @@ const socketConfig = {
         room: currentRoom,
         payload: {
           reconnect,
-          lastMessage: lastMessage.id,
+          lastMessage: lastMessage,
         },
       });
       reconnect = true;
