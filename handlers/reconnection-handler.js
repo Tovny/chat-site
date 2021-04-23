@@ -45,6 +45,13 @@ const reconnectionHandler = async (wss, ws, firestore, user, room, payload) => {
 
         done.push(client.uid);
       }
+
+      client.send(
+        JSON.stringify({
+          type: "newUser",
+          payload: [user],
+        })
+      );
     });
 
     ws.send(
