@@ -1,8 +1,8 @@
 import { combineReducers } from "redux";
-import messagesReducer from "./messages";
+import { messagesReducer } from "./messages";
 import activeUsersReducer from "./active-users";
-import userReducer from "./user";
-import roomReducer from "./room";
+import { userReducer } from "./user";
+import { roomReducer } from "./room";
 import roomDrawerReducer from "./room-drawer";
 import activeUsersDrawerReducer from "./active-users-drawer";
 
