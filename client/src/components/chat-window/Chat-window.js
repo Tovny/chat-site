@@ -15,7 +15,6 @@ import setOpenActiveUsersDrawer from "../../redux/actions/active-users-drawer-ac
 
 import {
   userSubject$,
-  roomSubject$,
   messages$,
   activeUsers$,
   userLeave$,
@@ -69,8 +68,6 @@ const ChatWindow = () => {
       dispatch(resetActiveUsers());
       getMessages(user, room);
     }
-
-    roomSubject$.next(room);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [room]);
