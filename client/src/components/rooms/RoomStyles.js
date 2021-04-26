@@ -22,10 +22,14 @@ const roomStyles = makeStyles((theme) => ({
     marginLeft: "0.25rem",
   },
   globalButton: {
-    border: "3px solid black",
+    border: "3px solid #212121",
     "&:hover": {
-      border: "3px solid black",
+      border: "3px solid #212121",
     },
+  },
+  unAuthedWarning: {
+    textAlign: "center",
+    padding: "0.75rem",
   },
   subbedHeading: {
     margin: "10px 0",

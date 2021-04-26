@@ -6,7 +6,7 @@ import setOpenRoomDrawer from "../../redux/actions/rooms-drawer-actions";
 
 import { roomSubject$, newRoomSuccess$, useObservable } from "../../websocket";
 
-import { IfFirebaseAuthed } from "@react-firebase/auth";
+import { IfFirebaseAuthed, IfFirebaseUnAuthed } from "@react-firebase/auth";
 
 import {
   Button,
@@ -86,21 +86,7 @@ const RoomsElt = ({ drawer = false, classes, user, dispatch, room }) => {
   return (
     <>
       {!drawer && (
-        <Button
-          fullWidth
-          variant={room === "Global Chat" ? "contained" : "outlined"}
-          color="primary"
-          size="large"
-          className={classes.globalButton}
-          onClick={() => {
-            if (room !== "Global Chat") dispatch(setRoom("Global Chat"));
-          }}
-        >
-          Global Chat
-        </Button>
-      )}
-      {drawer && (
-        <div className={classes.drawerGlobalDiv}>
+        <>
           <Button
             fullWidth
             variant={room === "Global Chat" ? "contained" : "outlined"}
@@ -113,11 +99,39 @@ const RoomsElt = ({ drawer = false, classes, user, dispatch, room }) => {
           >
             Global Chat
           </Button>
-          <CloseIcon
-            className={classes.closeIcon}
-            onClick={() => dispatch(setOpenRoomDrawer(false))}
-          />
-        </div>
+          <IfFirebaseUnAuthed>
+            <Typography variant="subtitle1" className={classes.unAuthedWarning}>
+              Please Sign in to get access to new rooms.
+            </Typography>
+          </IfFirebaseUnAuthed>
+        </>
+      )}
+      {drawer && (
+        <>
+          <div className={classes.drawerGlobalDiv}>
+            <Button
+              fullWidth
+              variant={room === "Global Chat" ? "contained" : "outlined"}
+              color="primary"
+              size="large"
+              className={classes.globalButton}
+              onClick={() => {
+                if (room !== "Global Chat") dispatch(setRoom("Global Chat"));
+              }}
+            >
+              Global Chat
+            </Button>
+            <CloseIcon
+              className={classes.closeIcon}
+              onClick={() => dispatch(setOpenRoomDrawer(false))}
+            />
+          </div>
+          <IfFirebaseUnAuthed>
+            <Typography variant="subtitle1" className={classes.unAuthedWarning}>
+              Please Sign in to get access to new rooms.
+            </Typography>
+          </IfFirebaseUnAuthed>
+        </>
       )}
       <IfFirebaseAuthed>
         <Typography
