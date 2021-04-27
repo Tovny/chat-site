@@ -1,6 +1,6 @@
 import { format, isToday, isYesterday } from "date-fns";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 
 import {
   Container,
@@ -27,15 +27,15 @@ const Messages = ({ messages, sendMessage, user, room, classes }) => {
       setNewMessages(newMessages + 1);
     }
 
-    setTimeout(() => {
-      const container = containerRef.current;
-      if (container.lastChild) {
-        container.lastChild.scrollIntoView({ behavior: "smooth" });
-        container.scrollBy(0, 500);
-      }
-    }, 100);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages]);
+
+  useLayoutEffect(() => {
+    const container = containerRef.current;
+    if (container.lastChild) {
+      container.lastChild.scrollIntoView({ behavior: "smooth" });
+      container.scrollBy(0, 500);
+    }
   }, [messages]);
 
   const resetTitle = () => {
@@ -79,7 +79,7 @@ const Messages = ({ messages, sendMessage, user, room, classes }) => {
           ))}
         </ul>
       </Container>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit} className={classes.typingForm}>
         <ButtonGroup fullWidth className={classes.typingGroup}>
           <TextField
             variant="outlined"
@@ -139,7 +139,7 @@ const Message = ({ message, prevMessage, index, classes }) => {
           alt={`${message.username} avatar`}
           src={message.avatar}
         ></Avatar>
-        <Paper square variant="outlined" className={classes.postHeadingPaper}>
+        <Paper variant="outlined" className={classes.postHeadingPaper}>
           <Typography variant="subtitle1" className={classes.postUsername}>
             {message.username}
           </Typography>
