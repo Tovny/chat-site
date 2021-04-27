@@ -62,7 +62,6 @@ const Messages = ({ messages, sendMessage, user, room, classes }) => {
       const container = containerRef.current;
       if (container.lastChild) {
         container.lastChild.scrollIntoView({ behavior: "smooth" });
-        container.scrollBy(0, 500);
       }
     }, 100);
   }, [messages]);
