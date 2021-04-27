@@ -13,14 +13,11 @@ const useMessageStyles = makeStyles({
   messagesContainer: {
     flex: "1 1 auto",
     overflow: "auto",
-    "&::-webkit-scrollbar-track": {
+    "&::-webkit-scrollbar-thumb": {
       backgroundColor: "rgba(0,0,0,.1)",
     },
-    "&::-webkit-scrollbar-thumb": {
-      backgroundColor: "rgba(0,0,0,.2)",
-    },
     "&::-webkit-scrollbar": {
-      width: "7px",
+      width: "5px",
     },
   },
   messagesList: {
@@ -39,6 +36,7 @@ const useMessageStyles = makeStyles({
   postTime: {
     marginLeft: ".75rem",
     fontSize: "0.7rem",
+    color: "#525252",
   },
   postHeadingPaper: {
     display: "flex",
@@ -55,6 +53,9 @@ const useMessageStyles = makeStyles({
   messageText: {
     margin: "0 0.5rem",
     gridColumnStart: 2,
+  },
+  typingForm: {
+    flex: "0 1 auto",
   },
   typingGroup: {
     display: "grid",
