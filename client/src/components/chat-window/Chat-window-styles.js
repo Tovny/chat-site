@@ -7,6 +7,7 @@ const useMessageStyles = makeStyles({
   },
   messageWindow: {
     height: "calc(100vh - 4rem)",
+    height: "calc(var(--vh, 1vh) * 100 - 4rem)",
     display: "flex",
     position: "relative",
     flexFlow: "column",

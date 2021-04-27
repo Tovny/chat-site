@@ -59,6 +59,13 @@ const ChatWindow = () => {
       getMessages(user, room);
     }
 
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+
+    window.addEventListener("resize", () => {
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
