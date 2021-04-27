@@ -18,6 +18,7 @@ import SendIcon from "@material-ui/icons/Send";
 const Messages = ({ messages, sendMessage, user, room, classes }) => {
   const [message, setMessage] = useState("");
   const [newMessages, setNewMessages] = useState(1);
+  const [newMsgsWarning, setNewMsgsWarning] = useState(false);
 
   const containerRef = useRef(null);
 
@@ -25,6 +26,32 @@ const Messages = ({ messages, sendMessage, user, room, classes }) => {
     if (document.visibilityState !== "visible") {
       document.title = `(${newMessages}) Chat Site`;
       setNewMessages(newMessages + 1);
+    }
+
+    const container = containerRef.current;
+
+    if (container.lastChild) {
+      const observer = new window.IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setNewMsgsWarning(false);
+            return;
+          }
+          if (entry.boundingClientRect.top > 0) {
+            setNewMsgsWarning(true);
+          }
+        },
+        {
+          root: null,
+          threshold: 0.75,
+        }
+      );
+
+      const lastChild = container.lastChild;
+
+      observer.observe(lastChild);
+
+      return () => observer.unobserve(lastChild);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -67,6 +94,13 @@ const Messages = ({ messages, sendMessage, user, room, classes }) => {
   return (
     <>
       <Container className={classes.messagesContainer}>
+        {newMsgsWarning && (
+          <Paper square elevation={3} className={classes.warningPaper}>
+            <Typography variant="subtitle2">
+              You are viewing older messages.
+            </Typography>
+          </Paper>
+        )}
         <ul ref={containerRef} className={classes.messagesList}>
           {messages?.map((msg, i) => (
             <Message

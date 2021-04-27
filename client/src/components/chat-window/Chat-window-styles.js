@@ -8,6 +8,7 @@ const useMessageStyles = makeStyles({
   messageWindow: {
     height: "calc(100vh - 4rem)",
     display: "flex",
+    position: "relative",
     flexFlow: "column",
   },
   messagesContainer: {
@@ -53,6 +54,18 @@ const useMessageStyles = makeStyles({
   messageText: {
     margin: "0 0.5rem",
     gridColumnStart: 2,
+  },
+  warningPaper: {
+    position: "absolute",
+    display: "flex",
+    justifyContent: "center",
+    top: "0.5rem",
+    left: "50%",
+    width: "80%",
+    opacity: 0.95,
+    transform: "translateX(-50%)",
+    padding: "0.5rem",
+    zIndex: 5,
   },
   typingForm: {
     flex: "0 1 auto",
