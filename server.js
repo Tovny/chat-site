@@ -75,7 +75,7 @@ wss.on("connection", (ws) => {
         userChangeHandler(wss, ws, oldUser, newUser);
         break;
       case "roomChange":
-        roomChangeHandler(wss, ws, newRoom);
+        roomChangeHandler(wss, ws, oldRoom, newRoom);
         break;
       case "message":
         messageHandler(wss, ws, admin, firestore, payload, user, room);
@@ -106,12 +106,13 @@ wss.on("connection", (ws) => {
     let otherSockets = false;
 
     wss.clients.forEach((client) => {
-      if (client.uid === ws.uid && client !== ws) otherSockets = true;
+      if (client.uid === ws.uid && client.room === ws.room && client !== ws)
+        otherSockets = true;
     });
 
     if (!otherSockets)
       wss.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN)
+        if (client.room === ws.room && client.readyState === WebSocket.OPEN)
           client.send(JSON.stringify({ type: "userLeft", payload: ws.uid }));
       });
 

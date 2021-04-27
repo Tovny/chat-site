@@ -12,7 +12,8 @@ const userChangeHandler = (wss, ws, oldUser, newUser) => {
     });
   } else {
     wss.clients.forEach((client) => {
-      if (client.uid === ws.uid && client !== ws) otherSockets = true;
+      if (client.uid === ws.uid && client.room === ws.room && client !== ws)
+        otherSockets = true;
       if (client.room === ws.room && client.readyState === WebSocket.OPEN)
         client.send(
           JSON.stringify({
