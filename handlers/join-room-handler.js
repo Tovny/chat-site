@@ -4,7 +4,7 @@ const joinRoomHandler = async (wss, ws, room, firestore) => {
   const fireMessages = await firestore
     .collection(room)
     .orderBy("time", "asc")
-    .limitToLast(25)
+    .limitToLast(50)
     .get();
 
   const messages = new Array();
