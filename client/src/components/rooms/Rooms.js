@@ -101,7 +101,7 @@ const RoomsElt = ({ drawer = false, classes, user, dispatch, room }) => {
           </Button>
           <IfFirebaseUnAuthed>
             <Typography variant="subtitle1" className={classes.unAuthedWarning}>
-              Please Sign in to get access to new rooms.
+              Sign In to get access to private rooms.
             </Typography>
           </IfFirebaseUnAuthed>
         </>
@@ -128,7 +128,7 @@ const RoomsElt = ({ drawer = false, classes, user, dispatch, room }) => {
           </div>
           <IfFirebaseUnAuthed>
             <Typography variant="subtitle1" className={classes.unAuthedWarning}>
-              Please Sign in to get access to new rooms.
+              Sign In to get access to private rooms.
             </Typography>
           </IfFirebaseUnAuthed>
         </>
