@@ -27,7 +27,6 @@ const Rooms = () => {
   const dispatch = useDispatch();
   const classes = roomStyles();
 
-  const setMenuOpen = useState(false)[1];
   const room = useSelector((state) => state.room);
   const user = useSelector((state) => state.user);
   const openDrawer = useSelector((state) => state.roomDrawer);
@@ -35,11 +34,16 @@ const Rooms = () => {
   useObservable(newRoomSuccess$, setRoom);
 
   useEffect(() => {
-    setMenuOpen(false);
     roomSubject$.next(room);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [room]);
+
+  // Need to send a "ping" to establish the initial connection
+  useEffect(() => {
+    setTimeout(() => {
+      roomSubject$.next(room);
+    }, 50);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -80,7 +84,6 @@ const RoomsElt = ({ drawer = false, classes, user, dispatch, room }) => {
 
   useEffect(() => {
     setMenuOpen(false);
-    roomSubject$.next(room);
   }, [room]);
 
   return (
