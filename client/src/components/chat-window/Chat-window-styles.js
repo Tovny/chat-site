@@ -86,6 +86,7 @@ const useMessageStyles = makeStyles({
     display: "flex",
     flexFlow: "column",
     height: "calc(100vh - 4.5rem)",
+    height: "calc(var(--vh, 1vh) * 100 - 4.5rem)",
     padding: "0 0.5rem",
   },
   activeUsersContainerDrawer: {
