@@ -97,7 +97,7 @@ export default function SignIn({ setActivePage }) {
             inputRef={passwordRef}
           />
           <Grid container>
-            <Grid item xs>
+            <Grid item xs={5}>
               <Link
                 href="#"
                 variant="body2"
@@ -106,7 +106,7 @@ export default function SignIn({ setActivePage }) {
                 Forgot password?
               </Link>
             </Grid>
-            <Grid item>
+            <Grid item xs={7}>
               <Link
                 href="#"
                 variant="body2"
