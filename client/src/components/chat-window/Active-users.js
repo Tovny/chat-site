@@ -55,7 +55,7 @@ const ActiveUsers = ({ activeUsers, classes, drawer = false }) => {
                   src={user.avatar}
                   className={classes.activeUserAvatar}
                 />
-                <Typography variant="body1">{user.username}</Typography>
+                <Typography variant="subtitle2">{user.username}</Typography>
               </Grid>
             )
         )}
