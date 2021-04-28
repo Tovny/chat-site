@@ -30,6 +30,7 @@ const roomStyles = makeStyles((theme) => ({
   unAuthedWarning: {
     textAlign: "center",
     padding: "0.75rem",
+    maxWidth: "30ch",
   },
   subbedHeading: {
     margin: "10px 0",
