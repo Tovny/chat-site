@@ -14,6 +14,7 @@ import {
   Zoom,
 } from "@material-ui/core";
 import SendIcon from "@material-ui/icons/Send";
+import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 
 const Messages = ({ messages, sendMessage, user, room, classes }) => {
   const [message, setMessage] = useState("");
@@ -21,6 +22,7 @@ const Messages = ({ messages, sendMessage, user, room, classes }) => {
   const [newMsgsWarning, setNewMsgsWarning] = useState(false);
 
   const containerRef = useRef(null);
+  const ulRef = useRef(null);
 
   useEffect(() => {
     if (document.visibilityState !== "visible") {
@@ -28,7 +30,7 @@ const Messages = ({ messages, sendMessage, user, room, classes }) => {
       setNewMessages(newMessages + 1);
     }
 
-    const container = containerRef.current;
+    const container = ulRef.current;
 
     if (container.lastChild) {
       const observer = new window.IntersectionObserver(
@@ -59,7 +61,7 @@ const Messages = ({ messages, sendMessage, user, room, classes }) => {
 
   useLayoutEffect(() => {
     setTimeout(() => {
-      const container = containerRef.current;
+      const container = ulRef.current;
       if (container.lastChild) {
         container.lastChild.scrollIntoView({ behavior: "smooth" });
       }
@@ -94,15 +96,31 @@ const Messages = ({ messages, sendMessage, user, room, classes }) => {
 
   return (
     <>
-      <Container className={classes.messagesContainer}>
+      <Container ref={containerRef} className={classes.messagesContainer}>
         {newMsgsWarning && (
-          <Paper square elevation={3} className={classes.warningPaper}>
-            <Typography variant="subtitle2">
-              You are viewing older messages.
-            </Typography>
+          <Paper
+            variant="elevation"
+            elevation={3}
+            className={classes.warningPaper}
+          >
+            <Button
+              color="primary"
+              variant="contained"
+              size="large"
+              disableElevation
+              onClick={() => {
+                containerRef.current.scrollBy({
+                  left: 0,
+                  top: ulRef.current.getBoundingClientRect().height,
+                  behavior: "smooth",
+                });
+              }}
+            >
+              <KeyboardArrowDownIcon className={classes.downArrow} />
+            </Button>
           </Paper>
         )}
-        <ul ref={containerRef} className={classes.messagesList}>
+        <ul ref={ulRef} className={classes.messagesList}>
           {messages?.map((msg, i) => (
             <Message
               message={msg}

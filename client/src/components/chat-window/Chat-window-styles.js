@@ -17,9 +17,10 @@ const useMessageStyles = makeStyles({
     overflow: "auto",
     "&::-webkit-scrollbar-thumb": {
       backgroundColor: "rgba(0,0,0,.1)",
+      borderRadius: "7px",
     },
     "&::-webkit-scrollbar": {
-      width: "5px",
+      width: "7px",
     },
   },
   messagesList: {
@@ -59,14 +60,20 @@ const useMessageStyles = makeStyles({
   warningPaper: {
     position: "absolute",
     display: "flex",
+    alignItems: "center",
     justifyContent: "center",
-    top: "0.5rem",
-    left: "50%",
-    width: "80%",
-    opacity: 0.95,
-    transform: "translateX(-50%)",
-    padding: "0.5rem",
+    bottom: "5rem",
+    right: "1rem",
+    width: "2.5rem",
+    height: "2.5rem",
+    borderRadius: "50%",
     zIndex: 5,
+    opacity: "0.6",
+    overflow: "hidden",
+  },
+  downArrow: {
+    height: "2rem",
+    width: "2rem",
   },
   typingForm: {
     flex: "0 1 auto",
