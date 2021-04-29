@@ -1,11 +1,8 @@
 const WebSocket = require("ws");
 
 const roomChangeHandler = (wss, ws, oldRoom, newRoom) => {
-  let otherSockets = false;
-
-  wss.clients.forEach((client) => {
-    if (client.uid === ws.uid && client.room === oldRoom && client !== ws)
-      otherSockets = true;
+  const otherSockets = wss.clients.some((client) => {
+    client.uid === ws.uid && client.room === oldRoom && client !== ws;
   });
 
   if (!otherSockets)
