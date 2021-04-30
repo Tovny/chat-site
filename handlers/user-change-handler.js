@@ -9,11 +9,11 @@ const userChangeHandler = (wss, ws, oldUser, newUser) => {
         client.send(JSON.stringify({ type: "newUser", payload: [newUser] }));
     });
   } else {
-    const otherSockets = wss.clients.some((client) => {
-      client.uid === ws.uid && client.room === ws.room && client !== ws;
-    });
+    let otherSockets = false;
 
     wss.clients.forEach((client) => {
+      if (client.uid === ws.uid && client.room === ws.room && client !== ws)
+        otherSockets = true;
       if (client.room === ws.room && client.readyState === WebSocket.OPEN)
         client.send(
           JSON.stringify({
@@ -21,14 +21,15 @@ const userChangeHandler = (wss, ws, oldUser, newUser) => {
             payload: [newUser],
           })
         );
-
-      if (
-        !otherSockets &&
-        client.room === ws.room &&
-        client.readyState === WebSocket.OPEN
-      )
-        client.send(JSON.stringify({ type: "userLeft", payload: oldUser.uid }));
     });
+
+    if (!otherSockets)
+      wss.clients.forEach((client) => {
+        if (client.room === ws.room && client.readyState === WebSocket.OPEN)
+          client.send(
+            JSON.stringify({ type: "userLeft", payload: oldUser.uid })
+          );
+      });
   }
 
   ws.username = newUser.username;

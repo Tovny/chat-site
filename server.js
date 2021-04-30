@@ -103,8 +103,11 @@ wss.on("connection", (ws) => {
   ws.on("error", (err) => ws.send(err));
 
   ws.on("close", () => {
-    const otherSockets = wss.clients.some((client) => {
-      client.uid === ws.uid && client.room === ws.room && client !== ws;
+    let otherSockets = false;
+
+    wss.clients.forEach((client) => {
+      if (client.uid === ws.uid && client.room === ws.room && client !== ws)
+        otherSockets = true;
     });
 
     if (!otherSockets)
