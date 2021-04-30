@@ -7,7 +7,6 @@ const roomStyles = makeStyles((theme) => ({
     height: "calc(100vh - 5.5rem)",
     display: "flex",
     flexFlow: "column",
-    alignItems: "center",
   },
   roomsDrawer: {
     padding: "1rem",
@@ -20,7 +19,7 @@ const roomStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
   closeIcon: {
-    marginLeft: "0.25rem",
+    marginLeft: "0.5rem",
   },
   globalButton: {
     border: "3px solid #212121",
@@ -32,6 +31,7 @@ const roomStyles = makeStyles((theme) => ({
     textAlign: "center",
     padding: "0.75rem",
     maxWidth: "30ch",
+    margin: "0 auto",
   },
   subbedHeading: {
     margin: "10px 0",
