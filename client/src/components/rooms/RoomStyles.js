@@ -7,6 +7,7 @@ const roomStyles = makeStyles((theme) => ({
     height: "calc(100vh - 5.5rem)",
     display: "flex",
     flexFlow: "column",
+    alignItems: "center",
   },
   roomsDrawer: {
     padding: "1rem",
